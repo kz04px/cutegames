@@ -1,0 +1,49 @@
+{
+    "games": 100,
+    "concurrency": 1,
+    "ratinginterval": 10,
+    "timeoutbuffer": 25,
+    "maxfullmoves": 300,
+    "verbose": false,
+    "debug": false,
+    "recover": false,
+    "openings": {
+        "path": "/path/to/openings.txt",
+        "repeat": true,
+        "shuffle": false
+    },
+    "timecontrol": {
+        "type": "clock",
+        "time": 1000,
+        "increment": 10
+    },
+    "options": {
+        "debug": "false",
+        "threads": "1",
+        "hash": "128",
+        "ownbook": "false"
+    },
+    "pgn": {
+        "enabled": false,
+        "verbose": true,
+        "override": false,
+        "colour1": "White",
+        "colour2": "Black",
+        "path": "games.pgn",
+        "event": "?"
+    },
+    "engines": [
+        {
+            "name": "Engine 1",
+            "path": "/path/to/executable/engine_1"
+        },
+        {
+            "name": "Engine 2",
+            "path": "/path/to/executable/engine_2",
+            "parameters" : "--debug",
+            "options": {
+                "debug": "true"
+            }
+        }
+    ]
+}
