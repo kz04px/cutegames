@@ -36,13 +36,13 @@ Cute Games can not handle games such as:
 ---
 
 ## __Build__
-CMake, a C++17 compiler, and the boost library are required.
+CMake, a C++20 compiler, and the boost library are required.
 ```
 git clone https://github.com/kz04px/cutegames
 mkdir cutegames/build
 cd cutegames/build
 cmake ..
-make
+cmake --build .
 ```
 
 ---
