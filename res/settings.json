@@ -2,8 +2,6 @@
     "games": 100,
     "concurrency": 1,
     "ratinginterval": 10,
-    "timeoutbuffer": 25,
-    "maxfullmoves": 300,
     "verbose": false,
     "debug": false,
     "recover": false,
@@ -11,6 +9,10 @@
         "path": "/path/to/openings.txt",
         "repeat": true,
         "shuffle": false
+    },
+    "adjudication": {
+        "timeoutbuffer": 25,
+        "maxfullmoves": 300
     },
     "timecontrol": {
         "type": "clock",

@@ -96,7 +96,7 @@ void play_game(const std::size_t game_id,
 
                 break;
             case SearchSettings::Type::Movetime:
-                if (dt.count() > tc.movetime + settings.timeoutbuffer.count()) {
+                if (dt.count() > tc.movetime + settings.adjudication.timeoutbuffer) {
                     out_of_time = true;
                 }
                 break;

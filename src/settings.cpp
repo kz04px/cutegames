@@ -23,9 +23,9 @@ auto print_settings(const MatchSettings &settings) noexcept -> void {
             std::cout << "- tc " << settings.timecontrol.nodes << "nodes\n";
             break;
     }
-    std::cout << "- timeoutbuffer " << settings.timeoutbuffer.count() << "ms\n";
     std::cout << "- openings_path " << settings.openings_path << "\n";
-    std::cout << "- maxfullmoves " << settings.maxfullmoves << "\n";
+    std::cout << "- timeoutbuffer " << settings.adjudication.timeoutbuffer << "ms\n";
+    std::cout << "- maxfullmoves " << settings.adjudication.maxfullmoves << "\n";
     std::cout << "- update_frequency " << settings.update_frequency << "\n";
     std::cout << "- debug " << settings.debug << "\n";
     std::cout << "- repeat " << settings.repeat << "\n";
@@ -64,16 +64,20 @@ auto print_settings(const MatchSettings &settings) noexcept -> void {
             settings.num_threads = value.get<int>();
         } else if (key == "ratinginterval") {
             settings.update_frequency = value.get<int>();
-        } else if (key == "timeoutbuffer") {
-            settings.timeoutbuffer = std::chrono::milliseconds(value.get<int>());
-        } else if (key == "maxfullmoves") {
-            settings.maxfullmoves = value.get<int>();
         } else if (key == "debug") {
             settings.debug = value.get<bool>();
         } else if (key == "recover") {
             settings.recover = value.get<bool>();
         } else if (key == "verbose") {
             settings.verbose = value.get<bool>();
+        } else if (key == "adjudication") {
+            for (const auto &[a, b] : value.items()) {
+                if (a == "timeoutbuffer") {
+                    settings.adjudication.timeoutbuffer = b.get<int>();
+                } else if (a == "maxfullmoves") {
+                    settings.adjudication.maxfullmoves = b.get<int>();
+                }
+            }
         } else if (key == "timecontrol") {
             for (const auto &[a, b] : value.items()) {
                 // Search types
