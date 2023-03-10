@@ -57,6 +57,8 @@ add_executable(
 
     # Engine
     src/engine/engine.cpp
+    src/engine/engine_process.cpp
+    src/engine/engine_ugi.cpp
 
     # Events
     src/events/on_engine_loaded.cpp

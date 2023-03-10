@@ -95,6 +95,7 @@ class Engine {
    protected:
     callback_type m_recv = [](const auto) {
     };
+
     callback_type m_send = [](const auto) {
     };
 
