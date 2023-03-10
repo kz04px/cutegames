@@ -21,6 +21,10 @@ class ThreadPool {
     }
 
     ~ThreadPool() {
+        clear();
+    }
+
+    auto clear() noexcept -> void {
         m_stop = true;
 
         m_cv_work.notify_all();
@@ -30,6 +34,8 @@ class ThreadPool {
                 t.join();
             }
         }
+
+        m_work_queue = {};
     }
 
     [[nodiscard]] auto size() const noexcept -> size_type {
@@ -65,8 +71,10 @@ class ThreadPool {
                 return !m_work_queue.empty() || m_stop;
             });
 
-            // Get work
-            if (!m_work_queue.empty()) {
+            // Stop or get work
+            if (m_stop) {
+                break;
+            } else if (!m_work_queue.empty()) {
                 auto job = m_work_queue.front();
                 m_work_queue.pop();
                 m_num_busy_workers++;
@@ -81,8 +89,6 @@ class ThreadPool {
                 m_num_busy_workers--;
                 m_cv_finished.notify_all();
                 lock.unlock();
-            } else if (m_stop) {
-                break;
             }
         }
     }
