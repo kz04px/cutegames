@@ -59,6 +59,12 @@ void play_game(const std::size_t game_id,
 
     // Play a game
     while (true) {
+        // Check if we should ask the engine whose turn it is
+        if (settings.protocol.ask_turn) {
+            engine1->position(pos);
+            pos.set_turn(engine1->query_p1turn() ? Side::Player1 : Side::Player2);
+        }
+
         const auto is_p1_turn = pos.turn() == Side::Player1;
         auto &us = is_p1_turn ? engine1 : engine2;
 
@@ -74,7 +80,10 @@ void play_game(const std::size_t game_id,
         const auto t1 = std::chrono::steady_clock::now();
         const auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0);
 
+        // Assume that the side to move alternates with each move
+        // If this is not the case, then the "askturn" protocol setting should be set to true
         pos.makemove(movestr);
+        pos.set_turn(!pos.turn());
 
         switch (tc.type) {
             case SearchSettings::Type::Time:

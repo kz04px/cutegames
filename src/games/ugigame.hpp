@@ -12,7 +12,6 @@ class UGIGame : public Game {
 
     virtual void makemove(const std::string &movestr) override {
         m_move_history.emplace_back(movestr);
-        m_turn = !m_turn;
     }
 
     [[nodiscard]] virtual bool is_gameover() const noexcept override {

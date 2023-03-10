@@ -5,6 +5,9 @@
     "verbose": false,
     "debug": false,
     "recover": false,
+    "protocol": {
+        "askturn": true
+    },
     "openings": {
         "path": "/path/to/openings.txt",
         "repeat": true,

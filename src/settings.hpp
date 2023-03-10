@@ -19,6 +19,10 @@ struct AdjudicationSettings {
     int maxfullmoves = 0;
 };
 
+struct ProtocolSettings {
+    bool ask_turn = false;
+};
+
 struct MatchSettings {
     std::size_t num_threads = 1;
     int num_games = 1;
@@ -29,6 +33,7 @@ struct MatchSettings {
     SearchSettings timecontrol;
     SPRTSettings sprt;
     AdjudicationSettings adjudication;
+    ProtocolSettings protocol;
     bool shuffle_openings = false;
     bool repeat = true;
     bool debug = false;

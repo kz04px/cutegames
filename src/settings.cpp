@@ -70,6 +70,12 @@ auto print_settings(const MatchSettings &settings) noexcept -> void {
             settings.recover = value.get<bool>();
         } else if (key == "verbose") {
             settings.verbose = value.get<bool>();
+        } else if (key == "protocol") {
+            for (const auto &[a, b] : value.items()) {
+                if (a == "askturn") {
+                    settings.protocol.ask_turn = b.get<bool>();
+                }
+            }
         } else if (key == "adjudication") {
             for (const auto &[a, b] : value.items()) {
                 if (a == "timeoutbuffer") {
