@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "engine/engine.hpp"
+#include "tournament/types.hpp"
 
 struct SPRTSettings {
     bool enabled = false;
@@ -29,6 +30,7 @@ struct MatchSettings {
     int engine_store_size = 2;
     int update_frequency = 10;
     std::string openings_path;
+    TournamentType tournament_type = TournamentType::RoundRobin;
     std::vector<EngineSettings> engine_settings;
     SearchSettings timecontrol;
     SPRTSettings sprt;

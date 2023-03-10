@@ -23,6 +23,10 @@
 #include "play.hpp"
 #include "settings.hpp"
 #include "store.hpp"
+// Tournaments
+#include "tournament/gauntlet.hpp"
+#include "tournament/generator.hpp"
+#include "tournament/roundrobin.hpp"
 
 auto print_engine_settings(const std::vector<EngineSettings> &engine_settings) noexcept -> void {
     std::cout << "Engine Data:\n";
@@ -147,41 +151,42 @@ auto main(const int argc, const char **argv) noexcept -> int {
 
     const auto t0 = std::chrono::steady_clock::now();
 
+    std::shared_ptr<TournamentGenerator> generator;
+
+    switch (settings.tournament_type) {
+        case TournamentType::RoundRobin:
+            generator = std::make_shared<RoundRobinGenerator>(
+                settings.engine_settings.size(), settings.num_games, openings.size(), settings.repeat);
+            break;
+        case TournamentType::Gauntlet:
+            generator = std::make_shared<GauntletGenerator>(
+                settings.engine_settings.size(), settings.num_games, openings.size(), settings.repeat);
+            break;
+        default:
+            std::cerr << "Unknown tournament type" << std::endl;
+            return -1;
+    }
+
     // Create work to do
     ThreadPool tp{settings.num_threads};
-    for (std::size_t i = 0; i < engine_data.size(); ++i) {
-        for (std::size_t j = i + 1; j < engine_data.size(); ++j) {
-            auto game_id = 0;
-            auto fen_idx = 0;
+    while (!generator->is_finished()) {
+        const auto info = generator->next();
 
-            while (true) {
-                const auto &fen = openings.at(fen_idx % openings.size());
+        assert(info.idx_player1 != info.idx_player2);
+        assert(info.idx_player1 < engine_data.size());
+        assert(info.idx_player2 < engine_data.size());
+        assert(info.idx_opening < openings.size());
 
-                // Play a game
-                if (game_id >= settings.num_games) {
-                    break;
-                }
-                tp.add_job([&settings, &dispatcher, &engine_store, &engine_data, game_id, &fen, i, j]() {
-                    play_game(game_id, fen, i, j, settings, dispatcher, engine_store);
-                });
-                game_id++;
-                stats.num_games_total++;
-
-                // Play the reverse game
-                if (settings.repeat) {
-                    if (game_id >= settings.num_games) {
-                        break;
-                    }
-                    tp.add_job([&settings, &dispatcher, &engine_store, &engine_data, game_id, &fen, i, j]() {
-                        play_game(game_id, fen, j, i, settings, dispatcher, engine_store);
-                    });
-                    game_id++;
-                    stats.num_games_total++;
-                }
-
-                fen_idx++;
-            }
-        }
+        tp.add_job([&settings, &dispatcher, &engine_store, &engine_data, info, &openings]() {
+            play_game(info.id,
+                      openings.at(info.idx_opening),
+                      info.idx_player1,
+                      info.idx_player2,
+                      settings,
+                      dispatcher,
+                      engine_store);
+        });
+        stats.num_games_total++;
     }
 
     // Event listener

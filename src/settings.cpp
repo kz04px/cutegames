@@ -70,6 +70,12 @@ auto print_settings(const MatchSettings &settings) noexcept -> void {
             settings.recover = value.get<bool>();
         } else if (key == "verbose") {
             settings.verbose = value.get<bool>();
+        } else if (key == "tournament") {
+            if (value.get<std::string>() == "roundrobin") {
+                settings.tournament_type = TournamentType::RoundRobin;
+            } else if (value.get<std::string>() == "gauntlet") {
+                settings.tournament_type = TournamentType::Gauntlet;
+            }
         } else if (key == "protocol") {
             for (const auto &[a, b] : value.items()) {
                 if (a == "askturn") {

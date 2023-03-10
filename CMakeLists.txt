@@ -50,6 +50,7 @@ endif()
 # Add cutegames executable
 add_executable(
     cutegames
+
     src/main.cpp
     src/openings.cpp
     src/play.cpp
@@ -71,9 +72,14 @@ add_executable(
 # Add the test executable
 add_executable(
     tests
+
     tests/main.cpp
     tests/events.cpp
     tests/store.cpp
+
+    # Tournaments
+    tests/tournament/gauntlet.cpp
+    tests/tournament/roundrobin.cpp
 )
 
 target_link_libraries(

@@ -5,6 +5,7 @@
     "verbose": false,
     "debug": false,
     "recover": false,
+    "tournament": "roundrobin",
     "protocol": {
         "askturn": true
     },
