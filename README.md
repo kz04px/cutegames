@@ -20,7 +20,7 @@ Cute Games is designed to save engine developers from having to implement a prog
 ## __Limitations__
 Cute Games will only work for games similar in nature to chess. Specifically, that means:
 - Two player
-- Alternating turns
+- Sequential moves
 
 Cute Games can handle games such as:
 - chess
