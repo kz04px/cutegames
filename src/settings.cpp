@@ -110,6 +110,23 @@ auto print_settings(const MatchSettings &settings) noexcept -> void {
                     settings.shuffle_openings = b.get<bool>();
                 }
             }
+        } else if (key == "sprt") {
+            for (const auto &[a, b] : value.items()) {
+                if (a == "enabled") {
+                    settings.sprt.enabled = b.get<bool>();
+                } else if (a == "confidence") {
+                    settings.sprt.alpha = 1.0f - b.get<float>();
+                    settings.sprt.beta = 1.0f - b.get<float>();
+                } else if (a == "alpha") {
+                    settings.sprt.alpha = b.get<float>();
+                } else if (a == "beta") {
+                    settings.sprt.beta = b.get<float>();
+                } else if (a == "elo0") {
+                    settings.sprt.elo0 = b.get<float>();
+                } else if (a == "elo1") {
+                    settings.sprt.elo1 = b.get<float>();
+                }
+            }
         } else if (key == "options") {
             for (const auto &[a, b] : value.items()) {
                 engine_options[a] = b;

@@ -23,6 +23,12 @@
         "hash": "128",
         "ownbook": "false"
     },
+    "sprt": {
+        "enabled": false,
+        "elo0": 0.0,
+        "elo1": 5.0,
+        "confidence": 0.95
+    },
     "pgn": {
         "enabled": false,
         "verbose": true,
@@ -40,7 +46,7 @@
         {
             "name": "Engine 2",
             "path": "/path/to/executable/engine_2",
-            "parameters" : "--debug",
+            "parameters": "--debug",
             "options": {
                 "debug": "true"
             }

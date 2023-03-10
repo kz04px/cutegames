@@ -25,9 +25,7 @@ auto on_engine_unloaded(const std::shared_ptr<libevents::Event> &, const MatchSe
 
 auto on_match_finished(const std::shared_ptr<libevents::Event> &,
                        bool &,
-                       const MatchSettings &,
-                       MatchStatistics &,
-                       const std::vector<EngineStatistics> &,
-                       Store<UGIEngine> &) noexcept -> void;
+                       Store<UGIEngine> &,
+                       libevents::Dispatcher &) noexcept -> void;
 
 #endif

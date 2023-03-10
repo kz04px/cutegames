@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <iostream>
 #include <mutex>
+#include <sprt.hpp>
 #include <termcolor/termcolor.hpp>
 #include "on_events.hpp"
 #include "print.hpp"
@@ -16,7 +17,25 @@
     return num % frequency == 0 || num < frequency;
 }
 
-void print_results(const auto &engine_settings, const auto &engine_stats, const bool print_elo) {
+[[nodiscard]] constexpr auto is_sprt_stop(const SPRTSettings &sprt_settings,
+                                          const std::vector<EngineStatistics> &engine_stats) noexcept -> bool {
+    if (!sprt_settings.enabled || engine_stats.size() != 2) {
+        return false;
+    }
+
+    return sprt::should_stop(engine_stats[0].win,
+                             engine_stats[0].lose,
+                             engine_stats[0].draw,
+                             sprt_settings.elo0,
+                             sprt_settings.elo1,
+                             sprt_settings.alpha,
+                             sprt_settings.beta);
+}
+
+void print_results(const SPRTSettings &sprt_settings,
+                   const auto &engine_settings,
+                   const auto &engine_stats,
+                   const bool print_elo) {
     std::scoped_lock<std::mutex> lock(print_mutex);
 
     if (engine_settings.size() == 2) {
@@ -32,6 +51,12 @@ void print_results(const auto &engine_settings, const auto &engine_stats, const 
             const auto elo = get_elo(w, l, d);
             const auto err = get_err(w, l, d);
             std::cout << std::fixed << std::setprecision(2) << elo << " +/- " << err << "\n";
+            if (sprt_settings.enabled) {
+                const auto llr = sprt::get_llr(w, l, d, sprt_settings.elo0, sprt_settings.elo1);
+                const auto lbound = sprt::get_lbound(sprt_settings.alpha, sprt_settings.beta);
+                const auto ubound = sprt::get_ubound(sprt_settings.alpha, sprt_settings.beta);
+                std::cout << "SPRT: llr " << llr << ", lbound " << lbound << ", ubound " << ubound << "\n";
+            }
             std::cout << "\n";
         }
     } else {
@@ -85,12 +110,16 @@ auto on_game_finished(const std::shared_ptr<libevents::Event> &event,
         std::cout << "Finished game " << stats.num_games_finished << " of " << settings.num_games << "\n";
     }
 
-    if (should_update(stats.num_games_finished, settings.update_frequency)) {
+    const auto should_stop =
+        stats.num_games_finished >= stats.num_games_total || is_sprt_stop(settings.sprt, engine_stats);
+    const auto give_update = should_stop || should_update(stats.num_games_finished, settings.update_frequency);
+
+    if (give_update) {
         const auto print_elo = engine_stats.size() == 2 && stats.num_games_finished >= settings.update_frequency;
-        print_results(settings.engine_settings, engine_stats, print_elo);
+        print_results(settings.sprt, settings.engine_settings, engine_stats, print_elo);
     }
 
-    if (stats.num_games_finished >= stats.num_games_total) {
+    if (should_stop) {
         dispatcher.post_event(std::make_shared<MatchFinished>());
     }
 }

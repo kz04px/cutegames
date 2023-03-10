@@ -7,6 +7,14 @@
 #include <vector>
 #include "engine/engine.hpp"
 
+struct SPRTSettings {
+    bool enabled = false;
+    float alpha = 0.05f;
+    float beta = 0.05f;
+    float elo0 = 0.0f;
+    float elo1 = 5.0f;
+};
+
 struct MatchSettings {
     std::size_t num_threads = 1;
     std::chrono::milliseconds timeoutbuffer = std::chrono::milliseconds(10);
@@ -17,6 +25,7 @@ struct MatchSettings {
     std::string openings_path;
     std::vector<EngineSettings> engine_settings;
     SearchSettings timecontrol;
+    SPRTSettings sprt;
     bool shuffle_openings = false;
     bool repeat = true;
     bool debug = false;

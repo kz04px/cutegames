@@ -139,10 +139,9 @@ auto main(const int argc, const char **argv) noexcept -> int {
     dispatcher.register_event_listener(EventID::zEngineUnloaded, [&settings, &stats](const auto &event) {
         on_engine_unloaded(event, settings, stats);
     });
-    dispatcher.register_event_listener(
-        EventID::zMatchFinished, [&quit, &settings, &stats, &engine_statistics, &engine_store](const auto &event) {
-            on_match_finished(event, quit, settings, stats, engine_statistics, engine_store);
-        });
+    dispatcher.register_event_listener(EventID::zMatchFinished, [&quit, &engine_store, &dispatcher](const auto &event) {
+        on_match_finished(event, quit, engine_store, dispatcher);
+    });
 
     auto engine_data = std::vector<EngineStatistics>(settings.engine_settings.size());
 
@@ -191,6 +190,12 @@ auto main(const int argc, const char **argv) noexcept -> int {
         dispatcher.send_all();
     }
 
+    tp.clear();
+
+    while (!dispatcher.empty()) {
+        dispatcher.send_all();
+    }
+
     const auto t1 = std::chrono::steady_clock::now();
     const auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0);
     std::chrono::hh_mm_ss<std::chrono::milliseconds> tod{dt};
@@ -213,14 +218,6 @@ auto main(const int argc, const char **argv) noexcept -> int {
         std::cout << "Games/sec: " << games_per_s << "\n";
         std::cout << "Games/ms: " << games_per_ms << "\n";
         std::cout << "ms/game: " << dt.count() / stats.num_games_finished << "\n";
-    }
-
-    if (stats.num_games_total != stats.num_games_finished) {
-        std::cout << "\n";
-        std::cout << termcolor::red;
-        std::cout << "[WARN] ";
-        std::cout << termcolor::reset;
-        std::cout << "Game count might be wrong?\n";
     }
 
     return 0;

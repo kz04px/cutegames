@@ -120,11 +120,12 @@ void play_game(const std::size_t game_id,
         }
     }
 
-    dispatcher.post_event(std::make_shared<GameFinished>(game_id, engine1_id, engine2_id, gameresult, out_of_time));
-
     // Return the engines now we're done with them
     const auto released1 = engine_store.release(engine1);
     const auto released2 = engine_store.release(engine2);
+
+    engine1.reset();
+    engine2.reset();
 
     if (released1) {
         dispatcher.post_event(std::make_shared<EngineDestroyed>(99, "", ""));
@@ -132,4 +133,6 @@ void play_game(const std::size_t game_id,
     if (released2) {
         dispatcher.post_event(std::make_shared<EngineDestroyed>(99, "", ""));
     }
+
+    dispatcher.post_event(std::make_shared<GameFinished>(game_id, engine1_id, engine2_id, gameresult, out_of_time));
 }
