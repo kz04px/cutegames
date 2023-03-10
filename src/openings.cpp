@@ -12,6 +12,10 @@
     auto openings = std::vector<std::string>();
     std::string line;
     while (std::getline(f, line)) {
+        if (line.empty() || line[0] == '#') {
+            continue;
+        }
+
         openings.emplace_back(line);
     }
 
