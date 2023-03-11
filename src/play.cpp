@@ -57,6 +57,9 @@ void play_game(const std::size_t game_id,
     engine1->position(pos);
     pos.set_turn(engine1->query_p1turn() ? Side::Player1 : Side::Player2);
 
+    // Set who moved first for later use in the .pgn
+    pos.set_first_mover(pos.turn());
+
     // Play a game
     while (true) {
         // Check if we should ask the engine whose turn it is
@@ -143,5 +146,8 @@ void play_game(const std::size_t game_id,
         dispatcher.post_event(std::make_shared<EngineDestroyed>(99, "", ""));
     }
 
-    dispatcher.post_event(std::make_shared<GameFinished>(game_id, engine1_id, engine2_id, gameresult, out_of_time));
+    const auto adjudicated = out_of_time ? AdjudicationReason::Timeout : AdjudicationReason::None;
+
+    dispatcher.post_event(
+        std::make_shared<GameFinished>(game_id, engine1_id, engine2_id, gameresult, adjudicated, pos));
 }

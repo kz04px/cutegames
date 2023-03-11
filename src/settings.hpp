@@ -24,6 +24,16 @@ struct ProtocolSettings {
     bool ask_turn = false;
 };
 
+struct PGNSettings {
+    std::string path = "games.pgn";
+    std::string event = "*";
+    std::string colour1 = "white";
+    std::string colour2 = "black";
+    bool enabled = true;
+    bool verbose = false;
+    bool override = false;
+};
+
 struct MatchSettings {
     std::size_t num_threads = 1;
     int num_games = 1;
@@ -34,6 +44,7 @@ struct MatchSettings {
     std::vector<EngineSettings> engine_settings;
     SearchSettings timecontrol;
     SPRTSettings sprt;
+    PGNSettings pgn;
     AdjudicationSettings adjudication;
     ProtocolSettings protocol;
     bool shuffle_openings = false;

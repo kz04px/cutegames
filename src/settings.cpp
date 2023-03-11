@@ -148,6 +148,23 @@ auto print_settings(const MatchSettings &settings) noexcept -> void {
                 engine_options[a] = b;
             }
         } else if (key == "pgn") {
+            for (const auto &[a, b] : value.items()) {
+                if (a == "enabled") {
+                    settings.pgn.enabled = b.get<bool>();
+                } else if (a == "verbose") {
+                    settings.pgn.verbose = b.get<bool>();
+                } else if (a == "override") {
+                    settings.pgn.override = b.get<bool>();
+                } else if (a == "path") {
+                    settings.pgn.path = b.get<std::string>();
+                } else if (a == "event") {
+                    settings.pgn.event = b.get<std::string>();
+                } else if (a == "colour1") {
+                    settings.pgn.colour1 = b.get<std::string>();
+                } else if (a == "colour2") {
+                    settings.pgn.colour2 = b.get<std::string>();
+                }
+            }
         }
     }
 

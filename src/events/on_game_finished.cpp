@@ -5,6 +5,7 @@
 #include <mutex>
 #include <sprt.hpp>
 #include <termcolor/termcolor.hpp>
+#include "../pgn.hpp"
 #include "on_events.hpp"
 #include "print.hpp"
 
@@ -117,6 +118,15 @@ auto on_game_finished(const std::shared_ptr<libevents::Event> &event,
     if (give_update) {
         const auto print_elo = engine_stats.size() == 2 && stats.num_games_finished >= settings.update_frequency;
         print_results(settings.sprt, settings.engine_settings, engine_stats, print_elo);
+    }
+
+    if (settings.pgn.enabled) {
+        write_as_pgn(settings.pgn,
+                     settings.engine_settings[e->engine1_id].name,
+                     settings.engine_settings[e->engine2_id].name,
+                     e->result,
+                     e->reason,
+                     e->game);
     }
 
     if (should_stop) {

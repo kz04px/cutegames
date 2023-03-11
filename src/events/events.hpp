@@ -6,6 +6,8 @@
 #include <libevents.hpp>
 #include <string>
 #include <thread>
+#include "../games/game.hpp"
+#include "../games/ugigame.hpp"
 
 enum EventID : libevents::Event::EventIDType
 {
@@ -41,8 +43,13 @@ struct GameStarted : public libevents::Event {
 };
 
 struct GameFinished : public libevents::Event {
-    [[nodiscard]] GameFinished(const int i, const int id1, const int id2, const GameResult r, const bool timeloss)
-        : game_num(i), engine1_id(id1), engine2_id(id2), result(r), out_of_time(timeloss) {
+    [[nodiscard]] GameFinished(const int i,
+                               const int id1,
+                               const int id2,
+                               const GameResult r,
+                               const AdjudicationReason gg,
+                               const UGIGame g)
+        : game_num(i), engine1_id(id1), engine2_id(id2), result(r), reason(gg), game(g) {
     }
 
     [[nodiscard]] virtual auto id() const noexcept -> libevents::Event::EventIDType override {
@@ -53,7 +60,8 @@ struct GameFinished : public libevents::Event {
     int engine1_id = 0;
     int engine2_id = 0;
     GameResult result = GameResult::None;
-    bool out_of_time = false;
+    AdjudicationReason reason = AdjudicationReason::None;
+    UGIGame game;
 };
 
 struct MovePlayed : public libevents::Event {

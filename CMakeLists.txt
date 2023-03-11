@@ -53,6 +53,7 @@ add_executable(
 
     src/main.cpp
     src/openings.cpp
+    src/pgn.cpp
     src/play.cpp
     src/settings.cpp
 

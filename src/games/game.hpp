@@ -20,11 +20,11 @@ enum class Side
 
 enum class AdjudicationReason
 {
-    Decisive = 0,
-    Timeout,
+    Timeout = 0,
     Resign,
     Crash,
     IllegalMove,
+    Gamelength,
     None,
 };
 
@@ -60,16 +60,25 @@ class Game {
 
     [[nodiscard]] virtual auto get_result() const noexcept -> GameResult = 0;
 
+    [[nodiscard]] auto get_first_mover() const noexcept -> Side {
+        return m_first_mover;
+    }
+
     virtual auto makemove(const std::string &movestr) -> void = 0;
 
     auto set_turn(const Side s) noexcept -> void {
         m_turn = s;
     }
 
+    auto set_first_mover(const Side s) noexcept -> void {
+        m_first_mover = s;
+    }
+
    protected:
     std::string m_start_fen;
     std::vector<std::string> m_move_history;
     Side m_turn = Side::Player1;
+    Side m_first_mover = Side::Player1;
 };
 
 #endif
