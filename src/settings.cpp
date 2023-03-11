@@ -80,6 +80,12 @@ auto print_settings(const MatchSettings &settings) noexcept -> void {
             for (const auto &[a, b] : value.items()) {
                 if (a == "askturn") {
                     settings.protocol.ask_turn = b.get<bool>();
+                } else if (a == "gameover") {
+                    if (b.get<std::string>() == "tomove") {
+                        settings.protocol.gameover = QueryGameover::Tomove;
+                    } else if (b.get<std::string>() == "both") {
+                        settings.protocol.gameover = QueryGameover::Both;
+                    }
                 }
             }
         } else if (key == "adjudication") {

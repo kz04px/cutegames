@@ -7,6 +7,12 @@
 #include "engine/engine.hpp"
 #include "tournament/types.hpp"
 
+enum class QueryGameover
+{
+    Tomove = 0,
+    Both,
+};
+
 struct SPRTSettings {
     bool enabled = false;
     float alpha = 0.05f;
@@ -21,6 +27,7 @@ struct AdjudicationSettings {
 };
 
 struct ProtocolSettings {
+    QueryGameover gameover = QueryGameover::Tomove;
     bool ask_turn = false;
 };
 

@@ -25,6 +25,8 @@ enum class AdjudicationReason
     Crash,
     IllegalMove,
     Gamelength,
+    GameoverMismatch,
+    ResultMismatch,
     None,
 };
 

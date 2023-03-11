@@ -28,6 +28,10 @@
             return "Illegal move";
         case AdjudicationReason::Gamelength:
             return "Maximum game length";
+        case AdjudicationReason::GameoverMismatch:
+            return "Gameover mismatch";
+        case AdjudicationReason::ResultMismatch:
+            return "Result mismatch";
         case AdjudicationReason::None:
             return "*";
         default:

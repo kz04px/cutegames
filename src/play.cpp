@@ -49,9 +49,9 @@ void play_game(const std::size_t game_id,
     engine2->newgame();
 
     auto pos = UGIGame(fen);
-    auto gameresult = GameResult::None;
     auto tc = settings.timecontrol;
     auto out_of_time = false;
+    auto gameover_claimed = false;
 
     // Find out whose turn it is
     engine1->position(pos);
@@ -75,6 +75,23 @@ void play_game(const std::size_t game_id,
         us->isready();
         us->position(pos);
 
+        // Ask if the game is over
+        if (us->query_gameover()) {
+            gameover_claimed = true;
+            break;
+        }
+
+        // Should we ask the other engine if the game is over?
+        if (settings.protocol.gameover == QueryGameover::Both) {
+            auto &them = is_p1_turn ? engine2 : engine1;
+            them->isready();
+            them->position(pos);
+            if (them->query_gameover()) {
+                gameover_claimed = true;
+                break;
+            }
+        }
+
         const auto t0 = std::chrono::steady_clock::now();
 
         // Get move string
@@ -83,11 +100,7 @@ void play_game(const std::size_t game_id,
         const auto t1 = std::chrono::steady_clock::now();
         const auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0);
 
-        // Assume that the side to move alternates with each move
-        // If this is not the case, then the "askturn" protocol setting should be set to true
-        pos.makemove(movestr);
-        pos.set_turn(!pos.turn());
-
+        // Check time usage
         switch (tc.type) {
             case SearchSettings::Type::Time:
                 if (is_p1_turn) {
@@ -120,15 +133,36 @@ void play_game(const std::size_t game_id,
                 break;
         }
 
-        us->position(pos);
-        const auto is_gameover = us->query_gameover();
+        pos.makemove(movestr);
 
-        if (out_of_time) {
-            gameresult = is_p1_turn ? GameResult::Player2Win : GameResult::Player1Win;
-            break;
-        } else if (is_gameover) {
-            gameresult = us->query_result();
-            break;
+        // Assume that the side to move alternates with each move
+        // If this is not the case, then the "askturn" protocol setting should be set to true
+        pos.set_turn(!pos.turn());
+    }
+
+    auto result = GameResult::None;
+    auto adjudicated = AdjudicationReason::None;
+
+    if (out_of_time) {
+        result = pos.turn() == Side::Player1 ? GameResult::Player2Win : GameResult::Player1Win;
+        adjudicated = AdjudicationReason::Timeout;
+    } else if (gameover_claimed) {
+        engine1->isready();
+        engine1->position(pos);
+        const auto gameover1 = engine1->query_gameover();
+        const auto result1 = engine1->query_result();
+
+        engine2->isready();
+        engine2->position(pos);
+        const auto gameover2 = engine2->query_gameover();
+        const auto result2 = engine2->query_result();
+
+        if (gameover1 != gameover2) {
+            adjudicated = AdjudicationReason::GameoverMismatch;
+        } else if (result1 != result2) {
+            adjudicated = AdjudicationReason::ResultMismatch;
+        } else {
+            result = result1;
         }
     }
 
@@ -146,8 +180,5 @@ void play_game(const std::size_t game_id,
         dispatcher.post_event(std::make_shared<EngineDestroyed>(99, "", ""));
     }
 
-    const auto adjudicated = out_of_time ? AdjudicationReason::Timeout : AdjudicationReason::None;
-
-    dispatcher.post_event(
-        std::make_shared<GameFinished>(game_id, engine1_id, engine2_id, gameresult, adjudicated, pos));
+    dispatcher.post_event(std::make_shared<GameFinished>(game_id, engine1_id, engine2_id, result, adjudicated, pos));
 }
