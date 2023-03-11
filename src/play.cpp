@@ -133,6 +133,10 @@ void play_game(const std::size_t game_id,
                 break;
         }
 
+        if (out_of_time) {
+            break;
+        }
+
         pos.makemove(movestr);
 
         // Assume that the side to move alternates with each move
