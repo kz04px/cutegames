@@ -113,7 +113,7 @@ auto print_settings(const MatchSettings &settings) noexcept -> void {
                     settings.timecontrol.p1time = b.get<int>();
                     settings.timecontrol.p2time = b.get<int>();
                     settings.timecontrol.movetime = b.get<int>();
-                } else if (a == "increment") {
+                } else if (a == "increment" || a == "inc") {
                     settings.timecontrol.p1inc = b.get<int>();
                     settings.timecontrol.p2inc = b.get<int>();
                 } else if (a == "nodes") {
