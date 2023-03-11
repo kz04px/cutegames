@@ -117,13 +117,13 @@ void play_game(const std::size_t game_id,
                 break;
         }
 
+        us->position(pos);
         const auto is_gameover = us->query_gameover();
 
         if (out_of_time) {
             gameresult = is_p1_turn ? GameResult::Player2Win : GameResult::Player1Win;
             break;
         } else if (is_gameover) {
-            us->position(pos);
             gameresult = us->query_result();
             break;
         }
