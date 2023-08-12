@@ -12,7 +12,17 @@ namespace libevents {
 struct Event {
     using EventIDType = unsigned int;
 
+    Event() = default;
+
+    Event(const Event &event) = delete;
+
+    Event(const Event &&event) = delete;
+
     virtual ~Event() = default;
+
+    auto operator=(const Event &rhs) = delete;
+
+    auto operator=(const Event &&rhs) = delete;
 
     [[nodiscard]] virtual auto id() const noexcept -> EventIDType = 0;
 };
