@@ -1,7 +1,7 @@
 #ifndef MATCH_HPP
 #define MATCH_HPP
 
-struct MatchStatistics {
+struct [[nodiscard]] MatchStatistics {
     // Engines
     int num_engine_loads = 0;
     int num_engine_unloads = 0;

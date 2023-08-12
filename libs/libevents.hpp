@@ -9,7 +9,7 @@
 
 namespace libevents {
 
-struct Event {
+struct [[nodiscard]] Event {
     using EventIDType = unsigned int;
 
     Event() = default;
@@ -27,7 +27,7 @@ struct Event {
     [[nodiscard]] virtual auto id() const noexcept -> EventIDType = 0;
 };
 
-class Dispatcher {
+class [[nodiscard]] Dispatcher {
    public:
     using listener_type = std::function<void(std::shared_ptr<Event>)>;
 

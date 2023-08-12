@@ -27,7 +27,7 @@ enum EventID : libevents::Event::EventIDType
     zThreadFinished,
 };
 
-struct GameStarted final : public libevents::Event {
+struct [[nodiscard]] GameStarted final : public libevents::Event {
     [[nodiscard]] GameStarted(const int i, const std::string &f, const int id1, const int id2)
         : game_num(i), fen(f), engine1_id(id1), engine2_id(id2) {
     }
@@ -42,7 +42,7 @@ struct GameStarted final : public libevents::Event {
     int engine2_id = 0;
 };
 
-struct GameFinished final : public libevents::Event {
+struct [[nodiscard]] GameFinished final : public libevents::Event {
     [[nodiscard]] GameFinished(const int i,
                                const int id1,
                                const int id2,
@@ -64,7 +64,7 @@ struct GameFinished final : public libevents::Event {
     UGIGame game;
 };
 
-struct MovePlayed final : public libevents::Event {
+struct [[nodiscard]] MovePlayed final : public libevents::Event {
     [[nodiscard]] MovePlayed(const std::string movestr, const std::chrono::milliseconds t) : move(movestr), ms(t) {
     }
 
@@ -77,7 +77,7 @@ struct MovePlayed final : public libevents::Event {
     std::chrono::milliseconds ms = std::chrono::milliseconds(0);
 };
 
-struct MatchFinished final : public libevents::Event {
+struct [[nodiscard]] MatchFinished final : public libevents::Event {
     [[nodiscard]] MatchFinished() = default;
 
     [[nodiscard]] virtual auto id() const noexcept -> libevents::Event::EventIDType override {
@@ -85,7 +85,7 @@ struct MatchFinished final : public libevents::Event {
     }
 };
 
-struct ThreadFinished final : public libevents::Event {
+struct [[nodiscard]] ThreadFinished final : public libevents::Event {
     [[nodiscard]] ThreadFinished(const std::thread::id gg) : thread_id(gg) {
     }
 
@@ -96,7 +96,7 @@ struct ThreadFinished final : public libevents::Event {
     std::thread::id thread_id;
 };
 
-struct EngineCreated final : public libevents::Event {
+struct [[nodiscard]] EngineCreated final : public libevents::Event {
     [[nodiscard]] EngineCreated(const std::size_t a, const std::string &b, const std::string &c)
         : engine_id(a), path(b), name(c) {
     }
@@ -110,7 +110,7 @@ struct EngineCreated final : public libevents::Event {
     std::string name;
 };
 
-struct EngineDestroyed final : public libevents::Event {
+struct [[nodiscard]] EngineDestroyed final : public libevents::Event {
     [[nodiscard]] EngineDestroyed(const std::size_t a, const std::string &b, const std::string &c)
         : engine_id(a), path(b), name(c) {
     }

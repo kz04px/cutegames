@@ -13,7 +13,7 @@ enum class QueryGameover
     Both,
 };
 
-struct SPRTSettings {
+struct [[nodiscard]] SPRTSettings {
     bool enabled = false;
     float alpha = 0.05f;
     float beta = 0.05f;
@@ -21,17 +21,17 @@ struct SPRTSettings {
     float elo1 = 5.0f;
 };
 
-struct AdjudicationSettings {
+struct [[nodiscard]] AdjudicationSettings {
     int timeoutbuffer = 10;
     int maxfullmoves = 0;
 };
 
-struct ProtocolSettings {
+struct [[nodiscard]] ProtocolSettings {
     QueryGameover gameover = QueryGameover::Tomove;
     bool ask_turn = false;
 };
 
-struct PGNSettings {
+struct [[nodiscard]] PGNSettings {
     std::string path = "games.pgn";
     std::string event = "*";
     std::string colour1 = "white";
@@ -41,7 +41,7 @@ struct PGNSettings {
     bool override = false;
 };
 
-struct MatchSettings {
+struct [[nodiscard]] MatchSettings {
     std::size_t num_threads = 1;
     int num_games = 1;
     int engine_store_size = 2;

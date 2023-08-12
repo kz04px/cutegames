@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include "games/game.hpp"
 
-struct EngineStatistics {
+struct [[nodiscard]] EngineStatistics {
     int played = 0;
     int win = 0;
     int lose = 0;
@@ -17,7 +17,7 @@ struct EngineStatistics {
     int flagged = 0;
 };
 
-struct EngineSettings {
+struct [[nodiscard]] EngineSettings {
     std::size_t id = 0;
     std::string name;
     std::string path;
@@ -25,7 +25,7 @@ struct EngineSettings {
     std::unordered_map<std::string, std::string> options;
 };
 
-struct SearchSettings {
+struct [[nodiscard]] SearchSettings {
     enum class Type : int
     {
         Time = 0,
