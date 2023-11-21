@@ -51,7 +51,7 @@ auto write_as_pgn(const PGNSettings &settings,
     }
 
     f << "[Event \"" << settings.event << "\"]\n";
-    f << "[Site \"CuteAtaxx\"]\n";
+    f << "[Site \"CuteGames\"]\n";
     f << "[Date \"??\"]\n";
     f << "[Round \"1\"]\n";
     f << "[" << settings.colour1 << " \"" << player1 << "\"]\n";
