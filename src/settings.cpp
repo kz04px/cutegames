@@ -2,7 +2,6 @@
 #include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
-#include <termcolor/termcolor.hpp>
 
 auto print_settings(const MatchSettings &settings) noexcept -> void {
     std::cout << "Match settings loaded:\n";

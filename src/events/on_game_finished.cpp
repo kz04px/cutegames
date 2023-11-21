@@ -4,7 +4,6 @@
 #include <iostream>
 #include <mutex>
 #include <sprt.hpp>
-#include <termcolor/termcolor.hpp>
 #include "../pgn.hpp"
 #include "on_events.hpp"
 #include "print.hpp"

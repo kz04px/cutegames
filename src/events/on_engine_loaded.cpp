@@ -1,5 +1,5 @@
 #include <iostream>
-#include <termcolor/termcolor.hpp>
+#include "colour.hpp"
 #include "on_events.hpp"
 #include "print.hpp"
 
