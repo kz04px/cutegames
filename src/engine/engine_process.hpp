@@ -9,9 +9,13 @@
 
 class ProcessEngine : public Engine {
    public:
-    [[nodiscard]] ProcessEngine(const id_type id, const std::string &path);
+    [[nodiscard]] ProcessEngine(const id_type id, const std::string &path, const std::string &parameters);
 
-    [[nodiscard]] ProcessEngine(const id_type id, const std::string &path, callback_type recv, callback_type send);
+    [[nodiscard]] ProcessEngine(const id_type id,
+                                const std::string &path,
+                                const std::string &parameters,
+                                callback_type recv,
+                                callback_type send);
 
     virtual ~ProcessEngine();
 

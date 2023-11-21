@@ -2,15 +2,22 @@
 #include <boost/process.hpp>
 #include "engine.hpp"
 
-[[nodiscard]] ProcessEngine::ProcessEngine(const id_type id, const std::string &path)
-    : Engine(id), m_child(path, boost::process::std_out > m_out, boost::process::std_in < m_in) {
+[[nodiscard]] ProcessEngine::ProcessEngine(const id_type id, const std::string &path, const std::string &parameters)
+    : Engine(id),
+      m_child(path + (parameters.empty() ? "" : (" " + parameters)),
+              boost::process::std_out > m_out,
+              boost::process::std_in < m_in) {
 }
 
 [[nodiscard]] ProcessEngine::ProcessEngine(const id_type id,
                                            const std::string &path,
+                                           const std::string &parameters,
                                            callback_type recv,
                                            callback_type send)
-    : Engine(id, recv, send), m_child(path, boost::process::std_out > m_out, boost::process::std_in < m_in) {
+    : Engine(id, recv, send),
+      m_child(path + (parameters.empty() ? "" : (" " + parameters)),
+              boost::process::std_out > m_out,
+              boost::process::std_in < m_in) {
 }
 
 ProcessEngine::~ProcessEngine() {

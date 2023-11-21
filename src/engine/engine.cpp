@@ -13,8 +13,8 @@
             std::cout << "<send:" << std::this_thread::get_id() << "> " << msg << "\n";
         };
 
-        return std::make_shared<UGIEngine>(settings.id, settings.path, debug_recv, debug_send);
+        return std::make_shared<UGIEngine>(settings.id, settings.path, settings.parameters, debug_recv, debug_send);
     } else {
-        return std::make_shared<UGIEngine>(settings.id, settings.path);
+        return std::make_shared<UGIEngine>(settings.id, settings.path, settings.parameters);
     }
 }

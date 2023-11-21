@@ -7,9 +7,13 @@
 
 class UGIEngine : public ProcessEngine {
    public:
-    [[nodiscard]] UGIEngine(const id_type id, const std::string &path);
+    [[nodiscard]] UGIEngine(const id_type id, const std::string &path, const std::string &parameters);
 
-    [[nodiscard]] UGIEngine(const id_type id, const std::string &path, callback_type recv, callback_type send);
+    [[nodiscard]] UGIEngine(const id_type id,
+                            const std::string &path,
+                            const std::string &parameters,
+                            callback_type recv,
+                            callback_type send);
 
     virtual ~UGIEngine();
 

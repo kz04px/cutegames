@@ -1,11 +1,16 @@
 #include "engine_ugi.hpp"
 #include <utils.hpp>
 
-[[nodiscard]] UGIEngine::UGIEngine(const id_type id, const std::string &path) : ProcessEngine(id, path) {
+[[nodiscard]] UGIEngine::UGIEngine(const id_type id, const std::string &path, const std::string &parameters)
+    : ProcessEngine(id, path, parameters) {
 }
 
-[[nodiscard]] UGIEngine::UGIEngine(const id_type id, const std::string &path, callback_type recv, callback_type send)
-    : ProcessEngine(id, path, recv, send) {
+[[nodiscard]] UGIEngine::UGIEngine(const id_type id,
+                                   const std::string &path,
+                                   const std::string &parameters,
+                                   callback_type recv,
+                                   callback_type send)
+    : ProcessEngine(id, path, parameters, recv, send) {
 }
 
 UGIEngine::~UGIEngine() {
