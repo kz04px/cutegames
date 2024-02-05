@@ -1,8 +1,10 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
+#include <memory>
 #include <string>
 #include <vector>
+#include "../engine/engine.hpp"
 
 enum class GameResult
 {
@@ -39,6 +41,9 @@ static_assert(Side::Player2 == !Side::Player1);
 
 class Game {
    public:
+    [[nodiscard]] Game() : m_start_fen("startpos") {
+    }
+
     [[nodiscard]] Game(const std::string &fen) : m_start_fen(fen) {
     }
 
@@ -56,11 +61,12 @@ class Game {
         return m_turn;
     }
 
-    [[nodiscard]] virtual auto is_gameover() const noexcept -> bool = 0;
+    [[nodiscard]] virtual auto is_gameover(std::shared_ptr<Engine>) const noexcept -> bool = 0;
 
-    [[nodiscard]] virtual auto is_legal_move(const std::string &movestr) const noexcept -> bool = 0;
+    [[nodiscard]] virtual auto is_legal_move(const std::string &movestr,
+                                             std::shared_ptr<Engine>) const noexcept -> bool = 0;
 
-    [[nodiscard]] virtual auto get_result() const noexcept -> GameResult = 0;
+    [[nodiscard]] virtual auto get_result(std::shared_ptr<Engine>) const noexcept -> std::string = 0;
 
     [[nodiscard]] auto get_first_mover() const noexcept -> Side {
         return m_first_mover;

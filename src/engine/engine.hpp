@@ -5,7 +5,6 @@
 #include <string>
 #include <string_view>
 #include <unordered_map>
-#include "games/game.hpp"
 
 struct [[nodiscard]] EngineStatistics {
     int played = 0;
@@ -91,7 +90,7 @@ class Engine {
 
     virtual auto stop() -> void = 0;
 
-    virtual auto position(const Game &) -> void = 0;
+    virtual auto position(const std::string &, const std::vector<std::string> &) -> void = 0;
 
     virtual auto set_option(const std::string &, const std::string &) -> void = 0;
 

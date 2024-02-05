@@ -7,7 +7,6 @@
 #include <string>
 #include <thread>
 #include "../games/game.hpp"
-#include "../games/ugigame.hpp"
 
 enum EventID : libevents::Event::EventIDType
 {
@@ -48,7 +47,7 @@ struct [[nodiscard]] GameFinished final : public libevents::Event {
                                const int id2,
                                const GameResult r,
                                const AdjudicationReason gg,
-                               const UGIGame g)
+                               const std::shared_ptr<Game> g)
         : game_num(i), engine1_id(id1), engine2_id(id2), result(r), reason(gg), game(g) {
     }
 
@@ -61,7 +60,7 @@ struct [[nodiscard]] GameFinished final : public libevents::Event {
     int engine2_id = 0;
     GameResult result = GameResult::None;
     AdjudicationReason reason = AdjudicationReason::None;
-    UGIGame game;
+    std::shared_ptr<Game> game;
 };
 
 struct [[nodiscard]] MovePlayed final : public libevents::Event {

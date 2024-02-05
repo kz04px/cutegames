@@ -16,8 +16,6 @@ class UGIEngine final : public ProcessEngine {
 
     virtual ~UGIEngine();
 
-    [[nodiscard]] auto is_legal(const Game &, const std::string &) const noexcept -> bool;
-
     [[nodiscard]] auto is_gameover() const noexcept -> bool;
 
     virtual auto init() -> void override;
@@ -30,7 +28,7 @@ class UGIEngine final : public ProcessEngine {
 
     virtual auto stop() -> void override;
 
-    virtual auto position(const Game &game) -> void override;
+    virtual auto position(const std::string &start_fen, const std::vector<std::string> &move_history) -> void override;
 
     virtual auto set_option(const std::string &name, const std::string &value) -> void override;
 

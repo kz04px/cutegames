@@ -1,7 +1,6 @@
 #include "pgn.hpp"
 #include <fstream>
 #include "games/game.hpp"
-#include "games/ugigame.hpp"
 
 [[nodiscard]] auto result_string(const GameResult result) -> std::string {
     switch (result) {
@@ -44,7 +43,7 @@ auto write_as_pgn(const PGNSettings &settings,
                   const std::string &player2,
                   const GameResult result,
                   const AdjudicationReason reason,
-                  const UGIGame &game) -> void {
+                  const std::shared_ptr<Game> game) -> void {
     std::ofstream f(settings.path, std::fstream::out | std::fstream::app);
     if (!f.is_open()) {
         return;
@@ -57,7 +56,7 @@ auto write_as_pgn(const PGNSettings &settings,
     f << "[" << settings.colour1 << " \"" << player1 << "\"]\n";
     f << "[" << settings.colour2 << " \"" << player2 << "\"]\n";
     f << "[Result \"" << result_string(result) << "\"]\n";
-    f << "[FEN \"" << game.start_fen() << "\"]\n";
+    f << "[FEN \"" << game->start_fen() << "\"]\n";
     if (reason != AdjudicationReason::None) {
         f << "[Adjudicated \"" << adjudication_string(reason) << "\"]\n";
     }
@@ -68,18 +67,18 @@ auto write_as_pgn(const PGNSettings &settings,
         f << "[Winner \"" << player2 << "\"]\n";
         f << "[Loser \"" << player1 << "\"]\n";
     }
-    f << "[PlyCount \"" << game.move_history().size() << "\"]\n";
+    f << "[PlyCount \"" << game->move_history().size() << "\"]\n";
     f << "\n";
 
     auto ply = 0;
 
-    const auto p2_first = game.get_first_mover() == Side::Player2;
+    const auto p2_first = game->get_first_mover() == Side::Player2;
     if (p2_first) {
         f << "1... ";
         ply++;
     }
 
-    for (const auto &movestr : game.move_history()) {
+    for (const auto &movestr : game->move_history()) {
         if (ply % 2 == 0) {
             f << ply / 2 + 1 << ". ";
         }

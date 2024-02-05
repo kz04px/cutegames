@@ -12,6 +12,7 @@
 #include "cutegames.hpp"
 #include "events/events.hpp"
 #include "events/on_events.hpp"
+#include "games/ugigame.hpp"
 #include "match.hpp"
 #include "openings.hpp"
 #include "play.hpp"
@@ -171,8 +172,11 @@ auto main(const int argc, const char **argv) noexcept -> int {
         assert(info.idx_player2 < engine_data.size());
         assert(info.idx_opening < openings.size());
 
-        tp.add_job([&settings, &dispatcher, &engine_store, info, &openings]() {
-            play_game(info.id,
+        auto pos = std::make_shared<UGIGame>();
+
+        tp.add_job([pos, &settings, &dispatcher, &engine_store, info, &openings]() {
+            play_game(pos,
+                      info.id,
                       openings.at(info.idx_opening),
                       info.idx_player1,
                       info.idx_player2,

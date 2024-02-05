@@ -36,10 +36,6 @@ UGIEngine::~UGIEngine() {
     send("quit");
 }
 
-[[nodiscard]] auto UGIEngine::is_legal(const Game &, const std::string &) const noexcept -> bool {
-    return true;
-}
-
 [[nodiscard]] auto UGIEngine::is_gameover() const noexcept -> bool {
     return true;
 }
@@ -70,18 +66,18 @@ auto UGIEngine::set_option(const std::string &name, const std::string &value) ->
     send("setoption name " + name + " value " + value);
 }
 
-auto UGIEngine::position(const Game &game) -> void {
+auto UGIEngine::position(const std::string &start_fen, const std::vector<std::string> &move_history) -> void {
     auto msg = std::string();
 
-    if (game.start_fen().empty() || game.start_fen() == "startpos") {
+    if (start_fen.empty() || start_fen == "startpos") {
         msg += "position startpos";
     } else {
-        msg += "position fen " + game.start_fen();
+        msg += "position fen " + start_fen;
     }
 
-    if (!game.move_history().empty()) {
+    if (!move_history.empty()) {
         msg += " moves";
-        for (const auto &move : game.move_history()) {
+        for (const auto &move : move_history) {
             msg += " " + move;
         }
     }

@@ -5,6 +5,9 @@
 
 class UGIGame : public Game {
    public:
+    [[nodiscard]] UGIGame() : Game() {
+    }
+
     [[nodiscard]] UGIGame(const std::string &fen) : Game(fen) {
     }
 
@@ -14,16 +17,17 @@ class UGIGame : public Game {
         m_move_history.emplace_back(movestr);
     }
 
-    [[nodiscard]] virtual bool is_gameover() const noexcept override {
+    [[nodiscard]] virtual bool is_gameover(std::shared_ptr<Engine> engine) const noexcept override {
         return false;
     }
 
-    [[nodiscard]] virtual auto is_legal_move(const std::string &) const noexcept -> bool override {
+    [[nodiscard]] virtual auto is_legal_move(const std::string &,
+                                             std::shared_ptr<Engine> engine) const noexcept -> bool override {
         return true;
     }
 
-    [[nodiscard]] virtual auto get_result() const noexcept -> GameResult override {
-        return GameResult::None;
+    [[nodiscard]] virtual auto get_result(std::shared_ptr<Engine> engine) const noexcept -> std::string override {
+        return "";
     }
 
    protected:
