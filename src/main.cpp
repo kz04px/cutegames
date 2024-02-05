@@ -90,7 +90,7 @@ auto main(const int argc, const char **argv) noexcept -> int {
     }
 
     if (override_store) {
-        settings.engine_store_size = 2 * settings.num_threads;
+        settings.engine_store_size = *override_store * settings.num_threads;
     }
 
     if (override_debug) {
