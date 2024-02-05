@@ -1,0 +1,7 @@
+build/
+debug/
+release/
+.vscode/
+.cache/
+notes.md
+res/
