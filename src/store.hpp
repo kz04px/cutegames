@@ -7,7 +7,6 @@
 #include <memory>
 #include <mutex>
 #include <optional>
-#include <ranges>
 #include <vector>
 
 template <typename T>

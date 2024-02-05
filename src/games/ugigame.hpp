@@ -18,7 +18,7 @@ class UGIGame : public Game {
         return false;
     }
 
-    [[nodiscard]] virtual auto is_legal_move(const std::string &) const noexcept -> bool {
+    [[nodiscard]] virtual auto is_legal_move(const std::string &) const noexcept -> bool override {
         return true;
     }
 

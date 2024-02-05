@@ -2,7 +2,7 @@
 #define TOURNAMENT_ROUNDROBIN_HPP
 
 #include <cassert>
-#include <cstdint>
+#include <cstddef>
 #include "generator.hpp"
 
 class [[nodiscard]] RoundRobinGenerator : public TournamentGenerator {

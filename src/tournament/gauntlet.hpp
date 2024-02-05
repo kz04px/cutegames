@@ -1,7 +1,7 @@
 #ifndef TOURNAMENT_GAUNTLET_HPP
 #define TOURNAMENT_GAUNTLET_HPP
 
-#include <cstdint>
+#include <cstddef>
 #include "generator.hpp"
 
 class [[nodiscard]] GauntletGenerator : public TournamentGenerator {

@@ -1,13 +1,14 @@
 #ifndef UTIL_HPP
 #define UTIL_HPP
 
+#include <algorithm>
 #include <string_view>
 #include <vector>
 
 namespace utils {
 
-[[nodiscard]] static auto split(const std::string_view str, const std::string_view delims = " ")
-    -> std::vector<std::string_view> {
+[[nodiscard]] static auto split(const std::string_view str,
+                                const std::string_view delims = " ") -> std::vector<std::string_view> {
     std::vector<std::string_view> output;
 
     for (auto first = str.data(), second = str.data(), last = first + str.size(); second != last && first != last;

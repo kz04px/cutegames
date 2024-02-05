@@ -1,7 +1,7 @@
 #ifndef TOURNAMENT_GENERATOR_HPP
 #define TOURNAMENT_GENERATOR_HPP
 
-#include <cstdint>
+#include <cstddef>
 
 struct [[nodiscard]] GameInfo {
     std::size_t id = 0;

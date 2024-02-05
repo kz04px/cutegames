@@ -1,6 +1,7 @@
 #include "openings.hpp"
 #include <algorithm>
 #include <fstream>
+#include <random>
 
 [[nodiscard]] auto get_openings(const std::string &path, const bool shuffle) -> std::vector<std::string> {
     auto f = std::ifstream(path);
@@ -20,7 +21,9 @@
     }
 
     if (shuffle) {
-        std::random_shuffle(openings.begin(), openings.end());
+        std::random_device rd;
+        std::mt19937 g(rd());
+        std::shuffle(std::begin(openings), std::end(openings), g);
     }
 
     return openings;

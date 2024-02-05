@@ -1,4 +1,5 @@
 #include "play.hpp"
+#include "events/events.hpp"
 #include "games/ugigame.hpp"
 
 [[nodiscard]] auto get_engine(const MatchSettings &settings,

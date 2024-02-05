@@ -23,9 +23,9 @@
         return false;
     }
 
-    return sprt::should_stop(engine_stats[0].win,
-                             engine_stats[0].lose,
-                             engine_stats[0].draw,
+    return sprt::should_stop(engine_stats.at(0).win,
+                             engine_stats.at(0).lose,
+                             engine_stats.at(0).draw,
                              sprt_settings.elo0,
                              sprt_settings.elo1,
                              sprt_settings.alpha,

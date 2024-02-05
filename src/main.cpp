@@ -1,13 +1,9 @@
 #include <CLI/CLI.hpp>
-#include <atomic>
 #include <chrono>
 #include <csignal>
-#include <iomanip>
 #include <iostream>
 #include <memory>
-#include <mutex>
 #include <string>
-#include <thread>
 #include <vector>
 // gg
 #include <games/game.hpp>
@@ -176,7 +172,7 @@ auto main(const int argc, const char **argv) noexcept -> int {
         assert(info.idx_player2 < engine_data.size());
         assert(info.idx_opening < openings.size());
 
-        tp.add_job([&settings, &dispatcher, &engine_store, &engine_data, info, &openings]() {
+        tp.add_job([&settings, &dispatcher, &engine_store, info, &openings]() {
             play_game(info.id,
                       openings.at(info.idx_opening),
                       info.idx_player1,
