@@ -91,4 +91,9 @@ target_link_libraries(
     termcolor::termcolor
 )
 
+target_link_libraries(
+    tests
+    doctest::doctest
+)
+
 set_property(TARGET tests PROPERTY INTERPROCEDURAL_OPTIMIZATION_RELEASE FALSE)
