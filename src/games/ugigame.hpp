@@ -17,17 +17,24 @@ class UGIGame : public Game {
         m_move_history.emplace_back(movestr);
     }
 
+    [[nodiscard]] virtual auto is_p1_turn(std::shared_ptr<Engine> engine) const -> bool override {
+        engine->position(start_fen(), move_history());
+        return engine->query_p1turn();
+    }
+
     [[nodiscard]] virtual bool is_gameover(std::shared_ptr<Engine> engine) const noexcept override {
-        return false;
+        engine->position(start_fen(), move_history());
+        return engine->query_gameover();
     }
 
     [[nodiscard]] virtual auto is_legal_move(const std::string &,
-                                             std::shared_ptr<Engine> engine) const noexcept -> bool override {
+                                             std::shared_ptr<Engine>) const noexcept -> bool override {
         return true;
     }
 
     [[nodiscard]] virtual auto get_result(std::shared_ptr<Engine> engine) const noexcept -> std::string override {
-        return "";
+        engine->position(start_fen(), move_history());
+        return engine->query_result();
     }
 
    protected:

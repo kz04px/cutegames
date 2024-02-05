@@ -1,4 +1,5 @@
 #include "play.hpp"
+#include "engine/engine_uai.hpp"
 #include "engine/engine_ugi.hpp"
 #include "events/events.hpp"
 #include "games/game.hpp"
@@ -20,7 +21,16 @@
         std::make_shared<EngineCreated>(id, settings.engine_settings[id].name, settings.engine_settings[id].path));
 
     // Return new engine instance
-    auto ptr = make_engine(settings.engine_settings[id], settings.debug);
+    auto ptr = [&settings, id]() -> std::shared_ptr<Engine> {
+        switch (settings.engine_settings[id].protocol) {
+            case EngineProtocol::UGI:
+                return make_engine<UGIEngine>(settings.engine_settings[id], settings.debug);
+            case EngineProtocol::UAI:
+                return make_engine<UAIEngine>(settings.engine_settings[id], settings.debug);
+            default:
+                return {};
+        }
+    }();
     ptr->init();
 
     // Set options
@@ -56,8 +66,10 @@ void play_game(std::shared_ptr<Game> pos,
     auto gameover_claimed = false;
 
     // Find out whose turn it is
-    engine1->position(pos->start_fen(), pos->move_history());
-    pos->set_turn(engine1->query_p1turn() ? Side::Player1 : Side::Player2);
+    {
+        const auto is_p1_turn = pos->is_p1_turn(engine1);
+        pos->set_turn(is_p1_turn ? Side::Player1 : Side::Player2);
+    }
 
     // Set who moved first for later use in the .pgn
     pos->set_first_mover(pos->turn());
@@ -66,8 +78,8 @@ void play_game(std::shared_ptr<Game> pos,
     while (true) {
         // Check if we should ask the engine whose turn it is
         if (settings.protocol.ask_turn) {
-            engine1->position(pos->start_fen(), pos->move_history());
-            pos->set_turn(engine1->query_p1turn() ? Side::Player1 : Side::Player2);
+            const auto is_p1_turn = pos->is_p1_turn(engine1);
+            pos->set_turn(is_p1_turn ? Side::Player1 : Side::Player2);
         }
 
         const auto is_p1_turn = pos->turn() == Side::Player1;
@@ -78,7 +90,7 @@ void play_game(std::shared_ptr<Game> pos,
         us->position(pos->start_fen(), pos->move_history());
 
         // Ask if the game is over
-        if (us->query_gameover()) {
+        if (pos->is_gameover(us)) {
             gameover_claimed = true;
             break;
         }
@@ -87,8 +99,7 @@ void play_game(std::shared_ptr<Game> pos,
         if (settings.protocol.gameover == QueryGameover::Both) {
             auto &them = is_p1_turn ? engine2 : engine1;
             them->is_ready();
-            them->position(pos->start_fen(), pos->move_history());
-            if (them->query_gameover()) {
+            if (pos->is_gameover(them)) {
                 gameover_claimed = true;
                 break;
             }
@@ -155,13 +166,13 @@ void play_game(std::shared_ptr<Game> pos,
     } else if (gameover_claimed) {
         engine1->is_ready();
         engine1->position(pos->start_fen(), pos->move_history());
-        const auto gameover1 = engine1->query_gameover();
-        const auto result1 = engine1->query_result();
+        const auto gameover1 = pos->is_gameover(engine1);
+        const auto result1 = pos->get_result(engine1);
 
         engine2->is_ready();
         engine2->position(pos->start_fen(), pos->move_history());
-        const auto gameover2 = engine2->query_gameover();
-        const auto result2 = engine2->query_result();
+        const auto gameover2 = pos->is_gameover(engine2);
+        const auto result2 = pos->get_result(engine2);
 
         if (gameover1 != gameover2) {
             adjudicated = AdjudicationReason::GameoverMismatch;

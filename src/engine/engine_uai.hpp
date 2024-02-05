@@ -1,20 +1,20 @@
-#ifndef ENGINE_UGI_HPP
-#define ENGINE_UGI_HPP
+#ifndef ENGINE_UAI_HPP
+#define ENGINE_UAI_HPP
 
 #include <string>
 #include "engine_process.hpp"
 
-class UGIEngine final : public ProcessEngine {
+class UAIEngine final : public ProcessEngine {
    public:
-    [[nodiscard]] UGIEngine(const id_type id, const std::string &path, const std::string &parameters);
+    [[nodiscard]] UAIEngine(const id_type id, const std::string &path, const std::string &parameters);
 
-    [[nodiscard]] UGIEngine(const id_type id,
+    [[nodiscard]] UAIEngine(const id_type id,
                             const std::string &path,
                             const std::string &parameters,
                             callback_type recv,
                             callback_type send);
 
-    virtual ~UGIEngine();
+    virtual ~UAIEngine();
 
     [[nodiscard]] auto is_gameover() const noexcept -> bool;
 

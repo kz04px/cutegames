@@ -2,9 +2,18 @@
 #define ENGINE_HPP
 
 #include <functional>
+#include <iostream>
+#include <memory>
 #include <string>
 #include <string_view>
+#include <thread>
 #include <unordered_map>
+
+enum class [[nodiscard]] EngineProtocol
+{
+    UGI,
+    UAI,
+};
 
 struct [[nodiscard]] EngineStatistics {
     int played = 0;
@@ -20,6 +29,7 @@ struct [[nodiscard]] EngineSettings {
     std::string name;
     std::string path;
     std::string parameters;
+    EngineProtocol protocol;
     std::unordered_map<std::string, std::string> options;
 };
 
@@ -114,5 +124,22 @@ class Engine {
    private:
     id_type m_id = 0;
 };
+
+template <typename T>
+[[nodiscard]] auto make_engine(const EngineSettings &settings, const bool debug = false) -> std::shared_ptr<T> {
+    if (debug) {
+        const auto debug_recv = [](const std::string_view &msg) {
+            std::cout << "<recv:" << std::this_thread::get_id() << "> " << msg << "\n";
+        };
+
+        const auto debug_send = [](const std::string_view &msg) {
+            std::cout << "<send:" << std::this_thread::get_id() << "> " << msg << "\n";
+        };
+
+        return std::make_shared<T>(settings.id, settings.path, settings.parameters, debug_recv, debug_send);
+    } else {
+        return std::make_shared<T>(settings.id, settings.path, settings.parameters);
+    }
+}
 
 #endif

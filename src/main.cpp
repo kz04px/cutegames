@@ -10,8 +10,10 @@
 #include <threadpool.hpp>
 // Stuff
 #include "cutegames.hpp"
+#include "engine/engine.hpp"
 #include "events/events.hpp"
 #include "events/on_events.hpp"
+#include "games/ataxx.hpp"
 #include "games/ugigame.hpp"
 #include "match.hpp"
 #include "openings.hpp"
@@ -23,11 +25,30 @@
 #include "tournament/generator.hpp"
 #include "tournament/roundrobin.hpp"
 
+[[nodiscard]] auto make_game(const GameType game_type, const std::string fen = "startpos") -> std::shared_ptr<Game> {
+    switch (game_type) {
+        case GameType::Generic:
+            return std::make_shared<UGIGame>(fen);
+        case GameType::Ataxx:
+            return std::make_shared<AtaxxGame>(fen);
+        default:
+            return {};
+    }
+}
+
 auto print_engine_settings(const std::vector<EngineSettings> &engine_settings) noexcept -> void {
     std::cout << "Engine Data:\n";
     for (const auto &data : engine_settings) {
         std::cout << "- " << data.id;
         std::cout << " " << data.name;
+        switch (data.protocol) {
+            case EngineProtocol::UGI:
+                std::cout << " UGI";
+                break;
+            case EngineProtocol::UAI:
+                std::cout << " UAI";
+                break;
+        }
         std::cout << " " << data.path;
         std::cout << " " << data.parameters;
         for (const auto &[key, val] : data.options) {
@@ -172,7 +193,7 @@ auto main(const int argc, const char **argv) noexcept -> int {
         assert(info.idx_player2 < engine_data.size());
         assert(info.idx_opening < openings.size());
 
-        auto pos = std::make_shared<UGIGame>();
+        auto pos = make_game(settings.game_type);
 
         tp.add_job([pos, &settings, &dispatcher, &engine_store, info, &openings]() {
             play_game(pos,

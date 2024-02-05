@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include "games/game.hpp"
 
 auto print_settings(const MatchSettings &settings) noexcept -> void {
     std::cout << "Match settings loaded:\n";
@@ -30,6 +31,15 @@ auto print_settings(const MatchSettings &settings) noexcept -> void {
     std::cout << "- repeat " << settings.repeat << "\n";
     std::cout << "- recover " << settings.recover << "\n";
     std::cout << "- verbose " << settings.verbose << "\n";
+
+    switch (settings.game_type) {
+        case GameType::Generic:
+            std::cout << "\nUsing the generic UGI protocol\n";
+            break;
+        case GameType::Ataxx:
+            std::cout << "\nUsing first class support for Ataxx\n";
+            break;
+    }
 }
 
 [[nodiscard]] auto read_json(const std::string &path) -> nlohmann::json {
@@ -59,6 +69,14 @@ auto print_settings(const MatchSettings &settings) noexcept -> void {
     for (const auto &[key, value] : json.items()) {
         if (key == "games") {
             settings.num_games = value.get<int>();
+        } else if (key == "game") {
+            if (value == "generic") {
+                settings.game_type = GameType::Generic;
+            } else if (value == "ataxx") {
+                settings.game_type = GameType::Ataxx;
+            } else {
+                throw std::invalid_argument("Unrecognised game type");
+            }
         } else if (key == "concurrency") {
             settings.num_threads = value.get<int>();
         } else if (key == "ratinginterval") {
@@ -197,6 +215,16 @@ auto print_settings(const MatchSettings &settings) noexcept -> void {
                 gg.name = b;
             } else if (a == "path") {
                 gg.path = b;
+            } else if (a == "protocol") {
+                if (b == "UGI") {
+                    gg.protocol = EngineProtocol::UGI;
+                } else {
+                    if (settings.game_type == GameType::Generic) {
+                        throw std::invalid_argument("Generic game mode must use the UGI protocol");
+                    } else if (b == "UAI") {
+                        gg.protocol = EngineProtocol::UAI;
+                    }
+                }
             } else if (a == "parameters") {
                 gg.parameters = b;
             } else if (a == "options") {

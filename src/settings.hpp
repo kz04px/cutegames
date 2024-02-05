@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "engine/engine.hpp"
+#include "games/game.hpp"
 #include "tournament/types.hpp"
 
 enum class QueryGameover
@@ -42,6 +43,7 @@ struct [[nodiscard]] PGNSettings {
 };
 
 struct [[nodiscard]] MatchSettings {
+    GameType game_type = GameType::Generic;
     std::size_t num_threads = 1;
     int num_games = 1;
     int engine_store_size = 2;

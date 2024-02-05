@@ -6,6 +6,12 @@
 #include <vector>
 #include "../engine/engine.hpp"
 
+enum class [[nodiscard]] GameType
+{
+    Generic,
+    Ataxx,
+};
+
 enum class GameResult
 {
     Player1Win = 0,
@@ -60,6 +66,8 @@ class Game {
     [[nodiscard]] virtual auto turn() const noexcept -> Side {
         return m_turn;
     }
+
+    [[nodiscard]] virtual auto is_p1_turn(std::shared_ptr<Engine> engine) const -> bool = 0;
 
     [[nodiscard]] virtual auto is_gameover(std::shared_ptr<Engine>) const noexcept -> bool = 0;
 

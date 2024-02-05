@@ -32,7 +32,13 @@ FetchContent_Declare(
     GIT_TAG b3cb0f365f8435588df7a6b12a82b2ac5fc1fe95
 )
 
-FetchContent_MakeAvailable(json doctest cli11 termcolor)
+FetchContent_Declare(
+    libataxx
+    GIT_REPOSITORY https://github.com/kz04px/libataxx
+    GIT_TAG 2fe5d1517c9e66fefb78cef7b3c35e5f9f1bb9ee
+)
+
+FetchContent_MakeAvailable(json doctest cli11 termcolor libataxx)
 
 find_package(Threads REQUIRED)
 
@@ -60,6 +66,7 @@ add_executable(
 
     # Engine
     src/engine/engine_process.cpp
+    src/engine/engine_uai.cpp
     src/engine/engine_ugi.cpp
 
     # Events
@@ -89,6 +96,7 @@ target_link_libraries(
     CLI11::CLI11
     nlohmann_json::nlohmann_json
     termcolor::termcolor
+    ataxx_static
 )
 
 target_link_libraries(
