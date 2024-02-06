@@ -1,5 +1,5 @@
-#ifndef OPENINGS_HPP
-#define OPENINGS_HPP
+#ifndef MATCH_OPENINGS_HPP
+#define MATCH_OPENINGS_HPP
 
 #include <string>
 #include <vector>

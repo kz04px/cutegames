@@ -59,10 +59,12 @@ add_executable(
     cutegames
 
     src/main.cpp
-    src/openings.cpp
-    src/pgn.cpp
-    src/play.cpp
-    src/settings.cpp
+
+    # Match
+    src/match/openings.cpp
+    src/match/pgn.cpp
+    src/match/play.cpp
+    src/match/settings.cpp
 
     # Engine
     src/engine/engine_process.cpp

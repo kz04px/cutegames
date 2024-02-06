@@ -4,9 +4,9 @@
 #include <memory>
 #include <vector>
 #include "../engine/engine.hpp"
+#include "../match/settings.hpp"
+#include "../match/statistics.hpp"
 #include "events.hpp"
-#include "match.hpp"
-#include "settings.hpp"
 #include "store.hpp"
 
 auto on_game_finished(const std::shared_ptr<libevents::Event> &,

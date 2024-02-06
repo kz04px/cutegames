@@ -1,5 +1,5 @@
-#ifndef SETTINGS_HPP
-#define SETTINGS_HPP
+#ifndef MATCH_SETTINGS_HPP
+#define MATCH_SETTINGS_HPP
 
 #include <cstdlib>
 #include <string>

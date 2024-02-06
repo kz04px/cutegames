@@ -2,7 +2,6 @@
 #define CUTEGAMES_EVENTS_HPP
 
 #include <chrono>
-#include <games/game.hpp>
 #include <libevents.hpp>
 #include <string>
 #include <thread>

@@ -5,25 +5,26 @@
 #include <memory>
 #include <string>
 #include <vector>
-// gg
-#include <games/game.hpp>
-#include <threadpool.hpp>
-// Stuff
-#include "cutegames.hpp"
+// Games
+#include "games/ataxx.hpp"
+#include "games/game.hpp"
+#include "games/ugigame.hpp"
+// Events
 #include "engine/engine.hpp"
 #include "events/events.hpp"
 #include "events/on_events.hpp"
-#include "games/ataxx.hpp"
-#include "games/ugigame.hpp"
-#include "match.hpp"
-#include "openings.hpp"
-#include "play.hpp"
-#include "settings.hpp"
-#include "store.hpp"
+// Match
+#include "match/openings.hpp"
+#include "match/play.hpp"
+#include "match/settings.hpp"
 // Tournaments
 #include "tournament/gauntlet.hpp"
 #include "tournament/generator.hpp"
 #include "tournament/roundrobin.hpp"
+// Stuff
+#include <threadpool.hpp>
+#include "cutegames.hpp"
+#include "store.hpp"
 
 [[nodiscard]] auto make_game(const GameType game_type, const std::string fen = "startpos") -> std::shared_ptr<Game> {
     switch (game_type) {

@@ -1,5 +1,5 @@
-#ifndef MATCH_HPP
-#define MATCH_HPP
+#ifndef MATCH_STATISTICS_HPP
+#define MATCH_STATISTICS_HPP
 
 struct [[nodiscard]] MatchStatistics {
     // Engines

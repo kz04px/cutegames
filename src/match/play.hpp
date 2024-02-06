@@ -1,5 +1,5 @@
-#ifndef PLAY_HPP
-#define PLAY_HPP
+#ifndef MATCH_PLAY_HPP
+#define MATCH_PLAY_HPP
 
 #include <libevents.hpp>
 #include <memory>

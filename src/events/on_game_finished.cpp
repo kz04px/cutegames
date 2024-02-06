@@ -4,7 +4,7 @@
 #include <iostream>
 #include <mutex>
 #include <sprt.hpp>
-#include "../pgn.hpp"
+#include "../match/pgn.hpp"
 #include "on_events.hpp"
 #include "print.hpp"
 

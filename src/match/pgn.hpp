@@ -1,12 +1,10 @@
-#ifndef PGN_HPP
-#define PGN_HPP
+#ifndef MATCH_PGN_HPP
+#define MATCH_PGN_HPP
 
 #include <memory>
 #include <string>
 #include "games/game.hpp"
 #include "settings.hpp"
-
-class UGIGame;
 
 auto write_as_pgn(const PGNSettings &settings,
                   const std::string &player1,
