@@ -3,7 +3,7 @@
 
 #include "game.hpp"
 
-class UGIGame : public Game {
+class UGIGame final : public Game {
    public:
     [[nodiscard]] UGIGame() : Game() {
     }

@@ -2,9 +2,11 @@
 #include <elo.hpp>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <mutex>
 #include <sprt.hpp>
 #include "../match/pgn.hpp"
+#include "events.hpp"
 #include "on_events.hpp"
 #include "print.hpp"
 

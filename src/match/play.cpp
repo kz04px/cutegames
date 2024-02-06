@@ -41,14 +41,14 @@
     return ptr;
 }
 
-void play_game(std::shared_ptr<Game> pos,
+auto play_game(std::shared_ptr<Game> pos,
                const std::size_t game_id,
                const std::string fen,
                const std::size_t engine1_id,
                const std::size_t engine2_id,
                const MatchSettings &settings,
                libevents::Dispatcher &dispatcher,
-               Store<Engine> &engine_store) {
+               Store<Engine> &engine_store) -> void {
     // Game started
     dispatcher.post_event(std::make_shared<GameStarted>(game_id, fen, engine1_id, engine2_id));
 

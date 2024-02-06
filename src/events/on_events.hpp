@@ -1,12 +1,12 @@
 #ifndef ON_EVENTS_HPP
 #define ON_EVENTS_HPP
 
+#include <libevents.hpp>
 #include <memory>
 #include <vector>
 #include "../engine/engine.hpp"
 #include "../match/settings.hpp"
 #include "../match/statistics.hpp"
-#include "events.hpp"
 #include "store.hpp"
 
 auto on_game_finished(const std::shared_ptr<libevents::Event> &,

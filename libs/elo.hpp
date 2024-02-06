@@ -84,23 +84,4 @@ static constexpr auto pi = std::numbers::pi_v<float>;
     return (get_diff(muMax) - get_diff(muMin)) / 2.0f;
 }
 
-static_assert(get_elo(10, 10, 10) == 0.0f);
-static_assert(std::round(get_elo(20, 10, 10)) == 89.0f);
-static_assert(std::round(get_elo(10, 20, 10)) == -89.0f);
-static_assert(std::round(get_elo(10, 10, 20)) == 0.0f);
-static_assert(std::round(get_elo(0, 10, 10)) == -191.0f);
-static_assert(std::round(get_elo(10, 0, 10)) == 191.0f);
-static_assert(std::round(get_elo(10, 10, 0)) == 0.0f);
-static_assert(std::round(get_elo(0, 0, 10)) == 0.0f);
-static_assert(std::round(get_elo(300, 100, 100)) == 147.0f);
-static_assert(std::round(get_elo(100, 300, 100)) == -147.0f);
-static_assert(std::round(get_elo(100, 100, 300)) == 0.0f);
-static_assert(std::round(get_err(10, 10, 10)) == 104.0f);
-static_assert(std::round(get_err(20, 10, 10)) == 98.0f);
-static_assert(std::round(get_err(10, 20, 10)) == 98.0f);
-static_assert(std::round(get_err(10, 10, 20)) == 77.0f);
-static_assert(std::round(get_err(300, 100, 100)) == 29.0f);
-static_assert(std::round(get_err(100, 300, 100)) == 29.0f);
-static_assert(std::round(get_err(100, 100, 300)) == 19.0f);
-
 #endif

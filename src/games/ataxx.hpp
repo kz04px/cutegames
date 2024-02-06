@@ -4,7 +4,7 @@
 #include <libataxx/position.hpp>
 #include "game.hpp"
 
-class AtaxxGame : public Game {
+class AtaxxGame final : public Game {
    public:
     [[nodiscard]] AtaxxGame() : Game() {
     }

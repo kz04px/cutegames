@@ -25,6 +25,7 @@
 #include <threadpool.hpp>
 #include "cutegames.hpp"
 #include "store.hpp"
+#include "tournament/types.hpp"
 
 [[nodiscard]] auto make_game(const GameType game_type, const std::string fen = "startpos") -> std::shared_ptr<Game> {
     switch (game_type) {
@@ -77,7 +78,22 @@ auto print_about() noexcept -> void {
     std::cout << "https://github.com/kz04px/cutegames\n";
 }
 
-auto main(const int argc, const char **argv) noexcept -> int {
+[[nodiscard]] auto make_generator(const TournamentType type,
+                                  const std::size_t num_engines,
+                                  const int num_games,
+                                  const std::size_t num_openings,
+                                  const bool repeat) -> std::shared_ptr<TournamentGenerator> {
+    switch (type) {
+        case TournamentType::RoundRobin:
+            return std::make_shared<RoundRobinGenerator>(num_engines, num_games, num_openings, repeat);
+        case TournamentType::Gauntlet:
+            return std::make_shared<GauntletGenerator>(num_engines, num_games, num_openings, repeat);
+        default:
+            throw std::invalid_argument("Unknown tournament type");
+    }
+}
+
+auto main(const int argc, const char *const *const argv) noexcept -> int {
     CLI::App app;
 
     auto settings_path = std::string();
@@ -168,21 +184,11 @@ auto main(const int argc, const char **argv) noexcept -> int {
 
     const auto t0 = std::chrono::steady_clock::now();
 
-    std::shared_ptr<TournamentGenerator> generator;
-
-    switch (settings.tournament_type) {
-        case TournamentType::RoundRobin:
-            generator = std::make_shared<RoundRobinGenerator>(
-                settings.engine_settings.size(), settings.num_games, openings.size(), settings.repeat);
-            break;
-        case TournamentType::Gauntlet:
-            generator = std::make_shared<GauntletGenerator>(
-                settings.engine_settings.size(), settings.num_games, openings.size(), settings.repeat);
-            break;
-        default:
-            std::cerr << "Unknown tournament type" << std::endl;
-            return -1;
-    }
+    auto generator = make_generator(settings.tournament_type,
+                                    settings.engine_settings.size(),
+                                    settings.num_games,
+                                    openings.size(),
+                                    settings.repeat);
 
     // Create work to do
     ThreadPool tp{settings.num_threads};

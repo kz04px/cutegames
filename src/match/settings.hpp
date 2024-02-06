@@ -6,9 +6,10 @@
 #include <vector>
 #include "engine/engine.hpp"
 #include "games/game.hpp"
+#include "pgn.hpp"
 #include "tournament/types.hpp"
 
-enum class QueryGameover
+enum class [[nodiscard]] QueryGameover
 {
     Tomove = 0,
     Both,
@@ -30,16 +31,6 @@ struct [[nodiscard]] AdjudicationSettings {
 struct [[nodiscard]] ProtocolSettings {
     QueryGameover gameover = QueryGameover::Tomove;
     bool ask_turn = false;
-};
-
-struct [[nodiscard]] PGNSettings {
-    std::string path = "games.pgn";
-    std::string event = "*";
-    std::string colour1 = "white";
-    std::string colour2 = "black";
-    bool enabled = true;
-    bool verbose = false;
-    bool override = false;
 };
 
 struct [[nodiscard]] MatchSettings {

@@ -8,11 +8,11 @@
 
 enum class [[nodiscard]] GameType
 {
-    Generic,
+    Generic = 0,
     Ataxx,
 };
 
-enum class GameResult
+enum class [[nodiscard]] GameResult
 {
     Player1Win = 0,
     Player2Win,
@@ -20,13 +20,13 @@ enum class GameResult
     None,
 };
 
-enum class Side
+enum class [[nodiscard]] Side
 {
     Player1 = 0,
     Player2,
 };
 
-enum class AdjudicationReason
+enum class [[nodiscard]] AdjudicationReason
 {
     Timeout = 0,
     Resign,
