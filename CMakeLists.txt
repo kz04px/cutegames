@@ -35,7 +35,7 @@ FetchContent_Declare(
 FetchContent_Declare(
     libataxx
     GIT_REPOSITORY https://github.com/kz04px/libataxx
-    GIT_TAG 2fe5d1517c9e66fefb78cef7b3c35e5f9f1bb9ee
+    GIT_TAG 8fa7dd3115552548aec6764e9cbe989f2430b239
 )
 
 FetchContent_MakeAvailable(json doctest cli11 termcolor libataxx)
