@@ -7,7 +7,6 @@
 #include "../engine/engine.hpp"
 #include "../match/settings.hpp"
 #include "../match/statistics.hpp"
-#include "store.hpp"
 
 auto on_game_finished(const std::shared_ptr<libevents::Event> &,
                       const MatchSettings &,
@@ -25,9 +24,6 @@ auto on_engine_unloaded(const std::shared_ptr<libevents::Event> &,
                         const MatchSettings &,
                         MatchStatistics &) noexcept -> void;
 
-auto on_match_finished(const std::shared_ptr<libevents::Event> &,
-                       bool &,
-                       Store<Engine> &,
-                       libevents::Dispatcher &) noexcept -> void;
+auto on_match_finished(const std::shared_ptr<libevents::Event> &, bool &) noexcept -> void;
 
 #endif

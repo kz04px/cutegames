@@ -22,7 +22,6 @@
 #include "tournament/generator.hpp"
 #include "tournament/roundrobin.hpp"
 // Stuff
-#include <threadpool.hpp>
 #include "cutegames.hpp"
 #include "store.hpp"
 #include "tournament/types.hpp"
@@ -128,7 +127,7 @@ auto main(const int argc, const char *const *const argv) noexcept -> int {
     }
 
     if (override_store) {
-        settings.engine_store_size = *override_store * settings.num_threads;
+        settings.engine_store_size = *override_store;
     }
 
     if (override_debug) {
@@ -145,7 +144,6 @@ auto main(const int argc, const char *const *const argv) noexcept -> int {
 
     auto quit = false;
     const auto openings = get_openings(settings.openings_path, settings.shuffle_openings);
-    auto engine_store = Store<Engine>(settings.engine_store_size);
     auto dispatcher = libevents::Dispatcher();
     auto engine_statistics = std::vector<EngineStatistics>(settings.engine_settings.size());
     MatchStatistics stats;
@@ -176,43 +174,64 @@ auto main(const int argc, const char *const *const argv) noexcept -> int {
     dispatcher.register_event_listener(EventID::zEngineUnloaded, [&settings, &stats](const auto &event) {
         on_engine_unloaded(event, settings, stats);
     });
-    dispatcher.register_event_listener(EventID::zMatchFinished, [&quit, &engine_store, &dispatcher](const auto &event) {
-        on_match_finished(event, quit, engine_store, dispatcher);
+    dispatcher.register_event_listener(EventID::zMatchFinished, [&quit](const auto &event) {
+        on_match_finished(event, quit);
     });
-
-    auto engine_data = std::vector<EngineStatistics>(settings.engine_settings.size());
 
     const auto t0 = std::chrono::steady_clock::now();
 
+    auto engine_data = std::vector<EngineStatistics>(settings.engine_settings.size());
+    std::vector<std::thread> workers;
+    std::mutex mtx;
     auto generator = make_generator(settings.tournament_type,
                                     settings.engine_settings.size(),
                                     settings.num_games,
                                     openings.size(),
                                     settings.repeat);
 
-    // Create work to do
-    ThreadPool tp{settings.num_threads};
-    while (!generator->is_finished()) {
-        const auto info = generator->next();
+    stats.num_games_total = generator->expected();
 
-        assert(info.idx_player1 != info.idx_player2);
-        assert(info.idx_player1 < engine_data.size());
-        assert(info.idx_player2 < engine_data.size());
-        assert(info.idx_opening < openings.size());
+    for (std::size_t i = 0; i < settings.num_threads; ++i) {
+        workers.emplace_back([&]() {
+            auto engine_store = Store<Engine>(settings.engine_store_size);
 
-        auto pos = make_game(settings.game_type);
+            while (true) {
+                // Get work
+                const auto info = [&generator, &mtx]() -> std::optional<GameInfo> {
+                    std::scoped_lock lock(mtx);
+                    if (generator->is_finished()) {
+                        return {};
+                    }
+                    return generator->next();
+                }();
 
-        tp.add_job([pos, &settings, &dispatcher, &engine_store, info, &openings]() {
-            play_game(pos,
-                      info.id,
-                      openings.at(info.idx_opening),
-                      info.idx_player1,
-                      info.idx_player2,
-                      settings,
-                      dispatcher,
-                      engine_store);
+                // Finish if no work left
+                if (!info) {
+                    break;
+                }
+
+                assert(info->idx_player1 != info->idx_player2);
+                assert(info->idx_player1 < engine_data.size());
+                assert(info->idx_player2 < engine_data.size());
+                assert(info->idx_opening < openings.size());
+
+                auto pos = make_game(settings.game_type);
+                play_game(pos,
+                          info->id,
+                          openings.at(info->idx_opening),
+                          info->idx_player1,
+                          info->idx_player2,
+                          settings,
+                          dispatcher,
+                          engine_store);
+            }
+
+            // Clear the store
+            while (!engine_store.empty()) {
+                engine_store.remove_oldest();
+                dispatcher.post_event(std::make_shared<EngineDestroyed>(99, "", ""));
+            }
         });
-        stats.num_games_total++;
     }
 
     // Event listener
@@ -221,10 +240,14 @@ auto main(const int argc, const char *const *const argv) noexcept -> int {
         dispatcher.send_all();
     }
 
-    tp.clear();
-
     while (!dispatcher.empty()) {
         dispatcher.send_all();
+    }
+
+    for (auto &thread : workers) {
+        if (thread.joinable()) {
+            thread.join();
+        }
     }
 
     const auto t1 = std::chrono::steady_clock::now();
