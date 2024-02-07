@@ -3,6 +3,7 @@
 #include <csignal>
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <vector>
 // Games
@@ -21,6 +22,9 @@
 #include "tournament/gauntlet.hpp"
 #include "tournament/generator.hpp"
 #include "tournament/roundrobin.hpp"
+// Engines
+#include "engine/engine_uai.hpp"
+#include "engine/engine_ugi.hpp"
 // Stuff
 #include "cutegames.hpp"
 #include "store.hpp"
@@ -33,8 +37,57 @@
         case GameType::Ataxx:
             return std::make_shared<AtaxxGame>(fen);
         default:
-            return {};
+            throw std::invalid_argument("Unrecognised game type");
     }
+}
+
+[[nodiscard]] auto make_engine(const GameType game_type,
+                               const EngineSettings &settings,
+                               const bool debug = false) -> std::shared_ptr<Engine> {
+    auto make_engine = [&game_type, &settings]() -> std::shared_ptr<Engine> {
+        switch (game_type) {
+            case GameType::Generic:
+                return std::make_shared<UGIEngine>(settings.id, settings.path, settings.parameters);
+            case GameType::Ataxx:
+                return std::make_shared<UAIEngine>(settings.id, settings.path, settings.parameters);
+            default:
+                throw std::invalid_argument("Unrecognised game type");
+        }
+    };
+
+    auto make_engine_debug = [&game_type, &settings]() -> std::shared_ptr<Engine> {
+        const auto debug_recv = [](const std::string_view &msg) {
+            std::cout << "<recv:" << std::this_thread::get_id() << "> " << msg << "\n";
+        };
+
+        const auto debug_send = [](const std::string_view &msg) {
+            std::cout << "<send:" << std::this_thread::get_id() << "> " << msg << "\n";
+        };
+
+        switch (game_type) {
+            case GameType::Generic:
+                return std::make_shared<UGIEngine>(
+                    settings.id, settings.path, settings.parameters, debug_recv, debug_send);
+            case GameType::Ataxx:
+                return std::make_shared<UAIEngine>(
+                    settings.id, settings.path, settings.parameters, debug_recv, debug_send);
+            default:
+                throw std::invalid_argument("Unrecognised game type");
+        }
+    };
+
+    auto engine = debug ? make_engine_debug() : make_engine();
+
+    engine->init();
+
+    // Set options
+    for (const auto &[name, value] : settings.options) {
+        engine->set_option(name, value);
+    }
+
+    engine->is_ready();
+
+    return engine;
 }
 
 auto print_engine_settings(const std::vector<EngineSettings> &engine_settings) noexcept -> void {
@@ -215,15 +268,51 @@ auto main(const int argc, const char *const *const argv) noexcept -> int {
                 assert(info->idx_player2 < engine_data.size());
                 assert(info->idx_opening < openings.size());
 
+                // Try get engines from store
+                auto engine1 = engine_store.get([id = info->idx_player1](const auto &obj) noexcept -> bool {
+                    return id == obj->get_id();
+                });
+                auto engine2 = engine_store.get([id = info->idx_player2](const auto &obj) noexcept -> bool {
+                    return id == obj->get_id();
+                });
+
+                // Create engine instance if not returned from store
+                if (!engine1) {
+                    engine1 =
+                        make_engine(settings.game_type, settings.engine_settings[info->idx_player1], settings.debug);
+                    dispatcher.post_event(
+                        std::make_shared<EngineCreated>(info->idx_player1,
+                                                        settings.engine_settings[info->idx_player1].name,
+                                                        settings.engine_settings[info->idx_player1].path));
+                }
+                if (!engine2) {
+                    engine2 =
+                        make_engine(settings.game_type, settings.engine_settings[info->idx_player2], settings.debug);
+                    dispatcher.post_event(
+                        std::make_shared<EngineCreated>(info->idx_player2,
+                                                        settings.engine_settings[info->idx_player2].name,
+                                                        settings.engine_settings[info->idx_player2].path));
+                }
+
+                dispatcher.post_event(std::make_shared<GameStarted>(
+                    info->id, openings.at(info->idx_opening), (*engine1)->get_id(), (*engine2)->get_id()));
+
                 auto pos = make_game(settings.game_type);
-                play_game(pos,
-                          info->id,
-                          openings.at(info->idx_opening),
-                          info->idx_player1,
-                          info->idx_player2,
-                          settings,
-                          dispatcher,
-                          engine_store);
+                const auto gg = play_game(pos, *engine1, *engine2, settings);
+
+                dispatcher.post_event(std::make_shared<GameFinished>(
+                    info->id, (*engine1)->get_id(), (*engine2)->get_id(), gg.result, gg.reason, pos));
+
+                // Return the engines now we're done with them
+                const auto released1 = engine_store.release(*engine1);
+                const auto released2 = engine_store.release(*engine2);
+
+                if (released1) {
+                    dispatcher.post_event(std::make_shared<EngineDestroyed>(99, "", ""));
+                }
+                if (released2) {
+                    dispatcher.post_event(std::make_shared<EngineDestroyed>(99, "", ""));
+                }
             }
 
             // Clear the store

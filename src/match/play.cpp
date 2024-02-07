@@ -1,60 +1,10 @@
 #include "play.hpp"
-#include "engine/engine_uai.hpp"
-#include "engine/engine_ugi.hpp"
-#include "events/events.hpp"
 #include "games/game.hpp"
 
-[[nodiscard]] auto get_engine(const MatchSettings &settings,
-                              libevents::Dispatcher &dispatcher,
-                              Store<Engine> &engine_store,
-                              const std::size_t id) -> std::shared_ptr<Engine> {
-    auto e = engine_store.get([id](const auto &obj) noexcept -> bool {
-        return id == obj->get_id();
-    });
-
-    // Return engine from cache
-    if (e) {
-        return *e;
-    }
-
-    dispatcher.post_event(
-        std::make_shared<EngineCreated>(id, settings.engine_settings[id].name, settings.engine_settings[id].path));
-
-    // Return new engine instance
-    auto ptr = [&settings, id]() -> std::shared_ptr<Engine> {
-        switch (settings.engine_settings[id].protocol) {
-            case EngineProtocol::UGI:
-                return make_engine<UGIEngine>(settings.engine_settings[id], settings.debug);
-            case EngineProtocol::UAI:
-                return make_engine<UAIEngine>(settings.engine_settings[id], settings.debug);
-            default:
-                return {};
-        }
-    }();
-    ptr->init();
-
-    // Set options
-    for (const auto &[name, value] : settings.engine_settings[id].options) {
-        ptr->set_option(name, value);
-    }
-
-    return ptr;
-}
-
 auto play_game(std::shared_ptr<Game> pos,
-               const std::size_t game_id,
-               const std::string fen,
-               const std::size_t engine1_id,
-               const std::size_t engine2_id,
-               const MatchSettings &settings,
-               libevents::Dispatcher &dispatcher,
-               Store<Engine> &engine_store) -> void {
-    // Game started
-    dispatcher.post_event(std::make_shared<GameStarted>(game_id, fen, engine1_id, engine2_id));
-
-    auto engine1 = get_engine(settings, dispatcher, engine_store, engine1_id);
-    auto engine2 = get_engine(settings, dispatcher, engine_store, engine2_id);
-
+               std::shared_ptr<Engine> engine1,
+               std::shared_ptr<Engine> engine2,
+               const MatchSettings &settings) -> GG {
     engine1->is_ready();
     engine2->is_ready();
 
@@ -191,19 +141,5 @@ auto play_game(std::shared_ptr<Game> pos,
         }
     }
 
-    // Return the engines now we're done with them
-    const auto released1 = engine_store.release(engine1);
-    const auto released2 = engine_store.release(engine2);
-
-    engine1.reset();
-    engine2.reset();
-
-    if (released1) {
-        dispatcher.post_event(std::make_shared<EngineDestroyed>(99, "", ""));
-    }
-    if (released2) {
-        dispatcher.post_event(std::make_shared<EngineDestroyed>(99, "", ""));
-    }
-
-    dispatcher.post_event(std::make_shared<GameFinished>(game_id, engine1_id, engine2_id, result, adjudicated, pos));
+    return GG{result, adjudicated};
 }
