@@ -11,10 +11,10 @@ auto on_engine_loaded(const std::shared_ptr<libevents::Event> &event,
 
     stats.num_engine_loads++;
 
-    if (settings.debug) {
+    if (settings.verbose) {
         std::scoped_lock<std::mutex> lock(print_mutex);
         std::cout << termcolor::blue;
-        std::cout << "[debug] ";
+        std::cout << "[verbose] ";
         std::cout << termcolor::reset;
         std::cout << "Load engine " << e->engine_id << "\n";
     }

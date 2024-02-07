@@ -11,10 +11,10 @@ auto on_engine_unloaded(const std::shared_ptr<libevents::Event> &event,
 
     stats.num_engine_unloads++;
 
-    if (settings.debug) {
+    if (settings.verbose) {
         std::scoped_lock<std::mutex> lock(print_mutex);
         std::cout << termcolor::blue;
-        std::cout << "[debug] ";
+        std::cout << "[verbose] ";
         std::cout << termcolor::reset;
         std::cout << "Unload engine " << e->engine_id << "\n";
     }

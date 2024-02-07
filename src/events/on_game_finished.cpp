@@ -6,6 +6,7 @@
 #include <mutex>
 #include <sprt.hpp>
 #include "../match/pgn.hpp"
+#include "colour.hpp"
 #include "events.hpp"
 #include "on_events.hpp"
 #include "print.hpp"
@@ -109,6 +110,9 @@ auto on_game_finished(const std::shared_ptr<libevents::Event> &event,
 
     if (settings.verbose) {
         std::scoped_lock<std::mutex> lock(print_mutex);
+        std::cout << termcolor::blue;
+        std::cout << "[verbose] ";
+        std::cout << termcolor::reset;
         std::cout << "Finished game " << stats.num_games_finished << " of " << settings.num_games << "\n";
     }
 
