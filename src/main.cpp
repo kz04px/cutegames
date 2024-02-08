@@ -7,9 +7,7 @@
 #include <string>
 #include <vector>
 // Games
-#include "games/ataxx.hpp"
 #include "games/game.hpp"
-#include "games/ugigame.hpp"
 // Events
 #include "engine/engine.hpp"
 #include "events/events.hpp"
@@ -29,17 +27,6 @@
 #include "cutegames.hpp"
 #include "store.hpp"
 #include "tournament/types.hpp"
-
-[[nodiscard]] auto make_game(const GameType game_type, const std::string fen = "startpos") -> std::shared_ptr<Game> {
-    switch (game_type) {
-        case GameType::Generic:
-            return std::make_shared<UGIGame>(fen);
-        case GameType::Ataxx:
-            return std::make_shared<AtaxxGame>(fen);
-        default:
-            throw std::invalid_argument("Unrecognised game type");
-    }
-}
 
 [[nodiscard]] auto make_engine(const GameType game_type,
                                const EngineSettings &settings,
@@ -297,11 +284,11 @@ auto main(const int argc, const char *const *const argv) noexcept -> int {
                 dispatcher.post_event(std::make_shared<GameStarted>(
                     info->id, openings.at(info->idx_opening), (*engine1)->get_id(), (*engine2)->get_id()));
 
-                auto pos = make_game(settings.game_type);
-                const auto gg = play_game(pos, *engine1, *engine2, settings);
+                const auto gg =
+                    play_game(settings.game_type, settings, openings.at(info->idx_opening), *engine1, *engine2);
 
                 dispatcher.post_event(std::make_shared<GameFinished>(
-                    info->id, (*engine1)->get_id(), (*engine2)->get_id(), gg.result, gg.reason, pos));
+                    info->id, (*engine1)->get_id(), (*engine2)->get_id(), gg.result, gg.reason, gg.game));
 
                 // Return the engines now we're done with them
                 const auto released1 = engine_store.release(*engine1);

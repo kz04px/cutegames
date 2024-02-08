@@ -1,10 +1,26 @@
 #include "play.hpp"
+#include "games/ataxx.hpp"
 #include "games/game.hpp"
+#include "games/ugigame.hpp"
 
-auto play_game(std::shared_ptr<Game> pos,
+[[nodiscard]] auto make_game(const GameType game_type, const std::string fen = "startpos") -> std::shared_ptr<Game> {
+    switch (game_type) {
+        case GameType::Generic:
+            return std::make_shared<UGIGame>(fen);
+        case GameType::Ataxx:
+            return std::make_shared<AtaxxGame>(fen);
+        default:
+            throw std::invalid_argument("Unrecognised game type");
+    }
+}
+
+auto play_game(const GameType game_type,
+               const MatchSettings &settings,
+               const std::string &fen,
                std::shared_ptr<Engine> engine1,
-               std::shared_ptr<Engine> engine2,
-               const MatchSettings &settings) -> GG {
+               std::shared_ptr<Engine> engine2) -> GG {
+    auto game = make_game(game_type, fen);
+
     engine1->is_ready();
     engine2->is_ready();
 
@@ -17,39 +33,39 @@ auto play_game(std::shared_ptr<Game> pos,
 
     // Find out whose turn it is
     {
-        const auto is_p1_turn = pos->is_p1_turn(engine1);
-        pos->set_turn(is_p1_turn ? Side::Player1 : Side::Player2);
+        const auto is_p1_turn = game->is_p1_turn(engine1);
+        game->set_turn(is_p1_turn ? Side::Player1 : Side::Player2);
     }
 
     // Set who moved first for later use in the .pgn
-    pos->set_first_mover(pos->turn());
+    game->set_first_mover(game->turn());
 
     // Play a game
     while (true) {
         // Check if we should ask the engine whose turn it is
-        if (settings.protocol.ask_turn) {
-            const auto is_p1_turn = pos->is_p1_turn(engine1);
-            pos->set_turn(is_p1_turn ? Side::Player1 : Side::Player2);
+        if (game_type == GameType::Generic && settings.protocol.ask_turn) {
+            const auto is_p1_turn = game->is_p1_turn(engine1);
+            game->set_turn(is_p1_turn ? Side::Player1 : Side::Player2);
         }
 
-        const auto is_p1_turn = pos->turn() == Side::Player1;
+        const auto is_p1_turn = game->turn() == Side::Player1;
         auto &us = is_p1_turn ? engine1 : engine2;
 
         // Inform the engine of the current position
         us->is_ready();
-        us->position(pos->start_fen(), pos->move_history());
+        us->position(game->start_fen(), game->move_history());
 
         // Ask if the game is over
-        if (pos->is_gameover(us)) {
+        if (game->is_gameover(us)) {
             gameover_claimed = true;
             break;
         }
 
         // Should we ask the other engine if the game is over?
-        if (settings.protocol.gameover == QueryGameover::Both) {
+        if (game_type == GameType::Generic && settings.protocol.gameover == QueryGameover::Both) {
             auto &them = is_p1_turn ? engine2 : engine1;
             them->is_ready();
-            if (pos->is_gameover(them)) {
+            if (game->is_gameover(them)) {
                 gameover_claimed = true;
                 break;
             }
@@ -100,29 +116,29 @@ auto play_game(std::shared_ptr<Game> pos,
             break;
         }
 
-        pos->makemove(movestr);
+        game->makemove(movestr);
 
         // Assume that the side to move alternates with each move
         // If this is not the case, then the "askturn" protocol setting should be set to true
-        pos->set_turn(!pos->turn());
+        game->set_turn(!game->turn());
     }
 
     auto result = GameResult::None;
     auto adjudicated = AdjudicationReason::None;
 
     if (out_of_time) {
-        result = pos->turn() == Side::Player1 ? GameResult::Player2Win : GameResult::Player1Win;
+        result = game->turn() == Side::Player1 ? GameResult::Player2Win : GameResult::Player1Win;
         adjudicated = AdjudicationReason::Timeout;
     } else if (gameover_claimed) {
         engine1->is_ready();
-        engine1->position(pos->start_fen(), pos->move_history());
-        const auto gameover1 = pos->is_gameover(engine1);
-        const auto result1 = pos->get_result(engine1);
+        engine1->position(game->start_fen(), game->move_history());
+        const auto gameover1 = game->is_gameover(engine1);
+        const auto result1 = game->get_result(engine1);
 
         engine2->is_ready();
-        engine2->position(pos->start_fen(), pos->move_history());
-        const auto gameover2 = pos->is_gameover(engine2);
-        const auto result2 = pos->get_result(engine2);
+        engine2->position(game->start_fen(), game->move_history());
+        const auto gameover2 = game->is_gameover(engine2);
+        const auto result2 = game->get_result(engine2);
 
         if (gameover1 != gameover2) {
             adjudicated = AdjudicationReason::GameoverMismatch;
@@ -141,5 +157,5 @@ auto play_game(std::shared_ptr<Game> pos,
         }
     }
 
-    return GG{result, adjudicated};
+    return GG{result, adjudicated, game};
 }
