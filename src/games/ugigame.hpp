@@ -15,6 +15,7 @@ class UGIGame final : public Game {
 
     virtual void makemove(const std::string &movestr) override {
         m_move_history.emplace_back(movestr);
+        m_turn = !m_turn;
     }
 
     [[nodiscard]] virtual auto is_p1_turn(std::shared_ptr<Engine> engine) const -> bool override {

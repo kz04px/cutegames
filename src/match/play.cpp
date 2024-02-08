@@ -32,13 +32,12 @@ auto play_game(const GameType game_type,
     auto gameover_claimed = false;
 
     // Find out whose turn it is
-    {
+    if (game_type == GameType::Generic) {
         const auto is_p1_turn = game->is_p1_turn(engine1);
-        game->set_turn(is_p1_turn ? Side::Player1 : Side::Player2);
+        const auto to_move = is_p1_turn ? Side::Player1 : Side::Player2;
+        game->set_turn(to_move);
+        game->set_first_mover(to_move);
     }
-
-    // Set who moved first for later use in the .pgn
-    game->set_first_mover(game->turn());
 
     // Play a game
     while (true) {
@@ -50,25 +49,17 @@ auto play_game(const GameType game_type,
 
         const auto is_p1_turn = game->turn() == Side::Player1;
         auto &us = is_p1_turn ? engine1 : engine2;
+        auto &them = is_p1_turn ? engine2 : engine1;
 
         // Inform the engine of the current position
         us->is_ready();
         us->position(game->start_fen(), game->move_history());
 
         // Ask if the game is over
-        if (game->is_gameover(us)) {
+        if (game->is_gameover(us) || (game_type == GameType::Generic &&
+                                      settings.protocol.gameover == QueryGameover::Both && game->is_gameover(them))) {
             gameover_claimed = true;
             break;
-        }
-
-        // Should we ask the other engine if the game is over?
-        if (game_type == GameType::Generic && settings.protocol.gameover == QueryGameover::Both) {
-            auto &them = is_p1_turn ? engine2 : engine1;
-            them->is_ready();
-            if (game->is_gameover(them)) {
-                gameover_claimed = true;
-                break;
-            }
         }
 
         const auto t0 = std::chrono::steady_clock::now();
@@ -117,10 +108,6 @@ auto play_game(const GameType game_type,
         }
 
         game->makemove(movestr);
-
-        // Assume that the side to move alternates with each move
-        // If this is not the case, then the "askturn" protocol setting should be set to true
-        game->set_turn(!game->turn());
     }
 
     auto result = GameResult::None;

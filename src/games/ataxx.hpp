@@ -11,6 +11,8 @@ class AtaxxGame final : public Game {
 
     [[nodiscard]] AtaxxGame(const std::string &fen) : Game(fen) {
         pos.set_fen(fen);
+        m_turn = pos.get_turn() == libataxx::Side::Black ? Side::Player1 : Side::Player2;
+        m_first_mover = m_turn;
     }
 
     virtual ~AtaxxGame() = default;
