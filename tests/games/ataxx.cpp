@@ -117,9 +117,16 @@ TEST_CASE("Ataxx - Play games") {
     const auto settings = MatchSettings{};
     auto engine1 = std::make_shared<TestEngine>();
     auto engine2 = std::make_shared<TestEngine>();
+    auto num_p1_wins = 0;
+    auto num_p2_wins = 0;
+    auto num_engine1_wins = 0;
+    auto num_engine2_wins = 0;
+    auto num_draws = 0;
 
     for (const auto &fen : fens) {
-        for (const auto &[p1, p2] : {std::make_pair(engine1, engine2), std::make_pair(engine2, engine1)}) {
+        for (const auto is_engine1_p1 : {true, false}) {
+            const auto &p1 = is_engine1_p1 ? engine1 : engine2;
+            const auto &p2 = is_engine1_p1 ? engine2 : engine1;
             const auto gg = play_game(game_type, settings, fen, p1, p2);
             const auto pos = get_final(gg.game);
 
@@ -131,12 +138,19 @@ TEST_CASE("Ataxx - Play games") {
             switch (gg.result) {
                 case GameResult::Player1Win:
                     REQUIRE_EQ(pos.get_result(), libataxx::Result::BlackWin);
+                    num_p1_wins++;
+                    num_engine1_wins += is_engine1_p1;
+                    num_engine2_wins += !is_engine1_p1;
                     break;
                 case GameResult::Player2Win:
                     REQUIRE_EQ(pos.get_result(), libataxx::Result::WhiteWin);
+                    num_p2_wins++;
+                    num_engine1_wins += !is_engine1_p1;
+                    num_engine2_wins += is_engine1_p1;
                     break;
                 case GameResult::Draw:
                     REQUIRE_EQ(pos.get_result(), libataxx::Result::Draw);
+                    num_draws++;
                     break;
                 case GameResult::None:
                     REQUIRE_EQ(pos.get_result(), libataxx::Result::None);
@@ -147,7 +161,12 @@ TEST_CASE("Ataxx - Play games") {
                     break;
             }
         }
+
+        REQUIRE(num_engine1_wins == num_engine2_wins);
     }
+
+    REQUIRE(num_p1_wins + num_p2_wins + num_draws == 2 * fens.size());
+    REQUIRE(num_draws == 0);
 }
 
 TEST_CASE("Ataxx - Black wins") {
@@ -162,9 +181,13 @@ TEST_CASE("Ataxx - Black wins") {
     const auto settings = MatchSettings{};
     auto engine1 = std::make_shared<TestEngine>();
     auto engine2 = std::make_shared<TestEngine>();
+    auto num_engine1_wins = 0;
+    auto num_engine2_wins = 0;
 
     for (const auto &fen : fens) {
-        for (const auto &[p1, p2] : {std::make_pair(engine1, engine2), std::make_pair(engine2, engine1)}) {
+        for (const auto is_engine1_p1 : {true, false}) {
+            const auto &p1 = is_engine1_p1 ? engine1 : engine2;
+            const auto &p2 = is_engine1_p1 ? engine2 : engine1;
             const auto gg = play_game(game_type, settings, fen, p1, p2);
             const auto pos = get_final(gg.game);
 
@@ -173,8 +196,15 @@ TEST_CASE("Ataxx - Black wins") {
             REQUIRE(gg.result == GameResult::Player1Win);
             REQUIRE(pos.get_result() == libataxx::Result::BlackWin);
             REQUIRE(gg.game->start_fen() == fen);
+
+            num_engine1_wins += is_engine1_p1;
+            num_engine2_wins += !is_engine1_p1;
         }
+
+        REQUIRE(num_engine1_wins == num_engine2_wins);
     }
+
+    REQUIRE(num_engine1_wins == fens.size());
 }
 
 TEST_CASE("Ataxx - White wins") {
@@ -189,9 +219,13 @@ TEST_CASE("Ataxx - White wins") {
     const auto settings = MatchSettings{};
     auto engine1 = std::make_shared<TestEngine>();
     auto engine2 = std::make_shared<TestEngine>();
+    auto num_engine1_wins = 0;
+    auto num_engine2_wins = 0;
 
     for (const auto &fen : fens) {
-        for (const auto &[p1, p2] : {std::make_pair(engine1, engine2), std::make_pair(engine2, engine1)}) {
+        for (const auto is_engine1_p1 : {true, false}) {
+            const auto &p1 = is_engine1_p1 ? engine1 : engine2;
+            const auto &p2 = is_engine1_p1 ? engine2 : engine1;
             const auto gg = play_game(game_type, settings, fen, p1, p2);
             const auto pos = get_final(gg.game);
 
@@ -200,6 +234,13 @@ TEST_CASE("Ataxx - White wins") {
             REQUIRE(gg.result == GameResult::Player2Win);
             REQUIRE(pos.get_result() == libataxx::Result::WhiteWin);
             REQUIRE(gg.game->start_fen() == fen);
+
+            num_engine1_wins += !is_engine1_p1;
+            num_engine2_wins += is_engine1_p1;
         }
+
+        REQUIRE(num_engine1_wins == num_engine2_wins);
     }
+
+    REQUIRE(num_engine1_wins == fens.size());
 }
