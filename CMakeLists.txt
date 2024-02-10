@@ -85,8 +85,11 @@ add_executable(
 
     tests/main.cpp
     tests/events.cpp
-    tests/play.cpp
     tests/store.cpp
+
+    # Games
+    tests/games/ataxx.cpp
+    tests/games/generic.cpp
 
     # Tournaments
     tests/tournament/gauntlet.cpp
