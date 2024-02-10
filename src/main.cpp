@@ -284,8 +284,13 @@ auto main(const int argc, const char *const *const argv) noexcept -> int {
                 dispatcher.post_event(std::make_shared<GameStarted>(
                     info->id, openings.at(info->idx_opening), (*engine1)->get_id(), (*engine2)->get_id()));
 
-                const auto gg =
-                    play_game(settings.game_type, settings, openings.at(info->idx_opening), *engine1, *engine2);
+                const auto gg = play_game(settings.game_type,
+                                          settings.timecontrol,
+                                          settings.adjudication,
+                                          settings.protocol,
+                                          openings.at(info->idx_opening),
+                                          *engine1,
+                                          *engine2);
 
                 dispatcher.post_event(std::make_shared<GameFinished>(
                     info->id, (*engine1)->get_id(), (*engine2)->get_id(), gg.result, gg.reason, gg.game));

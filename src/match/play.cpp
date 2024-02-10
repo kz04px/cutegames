@@ -2,6 +2,7 @@
 #include "games/ataxx.hpp"
 #include "games/game.hpp"
 #include "games/ugigame.hpp"
+#include "settings.hpp"
 
 [[nodiscard]] auto make_game(const GameType game_type, const std::string fen = "startpos") -> std::shared_ptr<Game> {
     switch (game_type) {
@@ -15,7 +16,9 @@
 }
 
 auto play_game(const GameType game_type,
-               const MatchSettings &settings,
+               const SearchSettings &timecontrol,
+               const AdjudicationSettings &adjudication,
+               const ProtocolSettings &protocol,
                const std::string &fen,
                std::shared_ptr<Engine> engine1,
                std::shared_ptr<Engine> engine2) -> GG {
@@ -27,7 +30,7 @@ auto play_game(const GameType game_type,
     engine1->newgame();
     engine2->newgame();
 
-    auto tc = settings.timecontrol;
+    auto tc = timecontrol;
     auto out_of_time = false;
     auto gameover_claimed = false;
 
@@ -42,7 +45,7 @@ auto play_game(const GameType game_type,
     // Play a game
     while (true) {
         // Check if we should ask the engine whose turn it is
-        if (game_type == GameType::Generic && settings.protocol.ask_turn) {
+        if (game_type == GameType::Generic && protocol.ask_turn) {
             const auto is_p1_turn = game->is_p1_turn(engine1);
             game->set_turn(is_p1_turn ? Side::Player1 : Side::Player2);
         }
@@ -56,17 +59,15 @@ auto play_game(const GameType game_type,
         us->position(game->start_fen(), game->move_history());
 
         // Ask if the game is over
-        if (game->is_gameover(us) || (game_type == GameType::Generic &&
-                                      settings.protocol.gameover == QueryGameover::Both && game->is_gameover(them))) {
+        if (game->is_gameover(us) ||
+            (game_type == GameType::Generic && protocol.gameover == QueryGameover::Both && game->is_gameover(them))) {
             gameover_claimed = true;
             break;
         }
 
-        const auto t0 = std::chrono::steady_clock::now();
-
         // Get move string
+        const auto t0 = std::chrono::steady_clock::now();
         const auto movestr = us->go(tc);
-
         const auto t1 = std::chrono::steady_clock::now();
         const auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0);
 
@@ -91,7 +92,7 @@ auto play_game(const GameType game_type,
 
                 break;
             case SearchSettings::Type::Movetime:
-                if (dt.count() > tc.movetime + settings.adjudication.timeoutbuffer) {
+                if (dt.count() > tc.movetime + adjudication.timeoutbuffer) {
                     out_of_time = true;
                 }
                 break;

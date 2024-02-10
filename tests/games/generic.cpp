@@ -3,6 +3,7 @@
 #include <games/ataxx.hpp>
 #include <libataxx/position.hpp>
 #include <match/play.hpp>
+#include <match/settings.hpp>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -113,8 +114,10 @@ TEST_CASE("Generic - Play games") {
         "7/7/7/7/-------/-------/x5o o 0 1",
     };
 
-    const auto game_type = GameType::Generic;
-    const auto settings = MatchSettings{};
+    const auto game_type = GameType::Ataxx;
+    const auto timecontrol = SearchSettings{};
+    const auto adjudication = AdjudicationSettings{};
+    const auto protocol = ProtocolSettings{};
     auto engine1 = std::make_shared<TestEngine>();
     auto engine2 = std::make_shared<TestEngine>();
     auto num_p1_wins = 0;
@@ -127,7 +130,7 @@ TEST_CASE("Generic - Play games") {
         for (const auto is_engine1_p1 : {true, false}) {
             const auto &p1 = is_engine1_p1 ? engine1 : engine2;
             const auto &p2 = is_engine1_p1 ? engine2 : engine1;
-            const auto gg = play_game(game_type, settings, fen, p1, p2);
+            const auto gg = play_game(game_type, timecontrol, adjudication, protocol, fen, p1, p2);
             const auto pos = get_final(gg.game);
 
             REQUIRE(gg.reason == AdjudicationReason::None);
@@ -177,8 +180,10 @@ TEST_CASE("Generic - Player 1 wins") {
         "xxxxx1o/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx o 99 1",
     };
 
-    const auto game_type = GameType::Generic;
-    const auto settings = MatchSettings{};
+    const auto game_type = GameType::Ataxx;
+    const auto timecontrol = SearchSettings{};
+    const auto adjudication = AdjudicationSettings{};
+    const auto protocol = ProtocolSettings{};
     auto engine1 = std::make_shared<TestEngine>();
     auto engine2 = std::make_shared<TestEngine>();
     auto num_engine1_wins = 0;
@@ -188,7 +193,7 @@ TEST_CASE("Generic - Player 1 wins") {
         for (const auto is_engine1_p1 : {true, false}) {
             const auto &p1 = is_engine1_p1 ? engine1 : engine2;
             const auto &p2 = is_engine1_p1 ? engine2 : engine1;
-            const auto gg = play_game(game_type, settings, fen, p1, p2);
+            const auto gg = play_game(game_type, timecontrol, adjudication, protocol, fen, p1, p2);
             const auto pos = get_final(gg.game);
 
             REQUIRE(gg.reason == AdjudicationReason::None);
@@ -215,8 +220,10 @@ TEST_CASE("Generic - Player 2 wins") {
         "ooooo1x/ooooooo/ooooooo/ooooooo/ooooooo/ooooooo/ooooooo o 99 1",
     };
 
-    const auto game_type = GameType::Generic;
-    const auto settings = MatchSettings{};
+    const auto game_type = GameType::Ataxx;
+    const auto timecontrol = SearchSettings{};
+    const auto adjudication = AdjudicationSettings{};
+    const auto protocol = ProtocolSettings{};
     auto engine1 = std::make_shared<TestEngine>();
     auto engine2 = std::make_shared<TestEngine>();
     auto num_engine1_wins = 0;
@@ -226,7 +233,7 @@ TEST_CASE("Generic - Player 2 wins") {
         for (const auto is_engine1_p1 : {true, false}) {
             const auto &p1 = is_engine1_p1 ? engine1 : engine2;
             const auto &p2 = is_engine1_p1 ? engine2 : engine1;
-            const auto gg = play_game(game_type, settings, fen, p1, p2);
+            const auto gg = play_game(game_type, timecontrol, adjudication, protocol, fen, p1, p2);
             const auto pos = get_final(gg.game);
 
             REQUIRE(gg.reason == AdjudicationReason::None);
