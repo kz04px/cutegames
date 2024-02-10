@@ -10,7 +10,6 @@
 #include <threadpool.hpp>
 // Stuff
 #include "cutegames.hpp"
-#include "engine/engine_ugi.hpp"
 #include "events/events.hpp"
 #include "events/on_events.hpp"
 #include "match.hpp"
@@ -107,7 +106,7 @@ auto main(const int argc, const char **argv) noexcept -> int {
 
     auto quit = false;
     const auto openings = get_openings(settings.openings_path, settings.shuffle_openings);
-    auto engine_store = Store<UGIEngine>(settings.engine_store_size);
+    auto engine_store = Store<Engine>(settings.engine_store_size);
     auto dispatcher = libevents::Dispatcher();
     auto engine_statistics = std::vector<EngineStatistics>(settings.engine_settings.size());
     MatchStatistics stats;

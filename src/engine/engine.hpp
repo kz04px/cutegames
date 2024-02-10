@@ -1,7 +1,6 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
-#include <boost/process.hpp>
 #include <functional>
 #include <string>
 #include <string_view>
@@ -66,15 +65,7 @@ class Engine {
     using callback_type = std::function<void(const std::string_view)>;
     using id_type = std::size_t;
 
-    [[nodiscard]] Engine(const id_type id) : m_id(id) {
-    }
-
-    [[nodiscard]] Engine(const id_type id, callback_type recv, callback_type send)
-        : m_recv(recv), m_send(send), m_id(id) {
-    }
-
-    virtual ~Engine() {
-    }
+    virtual ~Engine() = default;
 
     [[nodiscard]] auto get_id() const noexcept -> id_type {
         return m_id;
@@ -82,17 +73,39 @@ class Engine {
 
     [[nodiscard]] virtual auto is_running() -> bool = 0;
 
-    [[nodiscard]] virtual auto go(const SearchSettings &settings) -> std::string = 0;
+    [[nodiscard]] virtual auto go(const SearchSettings &) -> std::string = 0;
 
     [[nodiscard]] virtual auto query_p1turn() -> bool = 0;
 
     [[nodiscard]] virtual auto query_gameover() -> bool = 0;
 
-    [[nodiscard]] virtual auto query_result() -> GameResult = 0;
+    [[nodiscard]] virtual auto query_result() -> std::string = 0;
 
-    virtual auto position(const Game &game) -> void = 0;
+    virtual auto init() -> void = 0;
+
+    virtual auto is_ready() -> void = 0;
+
+    virtual auto newgame() -> void = 0;
+
+    virtual auto quit() -> void = 0;
+
+    virtual auto stop() -> void = 0;
+
+    virtual auto position(const Game &) -> void = 0;
+
+    virtual auto set_option(const std::string &, const std::string &) -> void = 0;
 
    protected:
+    [[nodiscard]] Engine() {
+    }
+
+    [[nodiscard]] Engine(const id_type id) : m_id(id) {
+    }
+
+    [[nodiscard]] Engine(const id_type id, callback_type recv, callback_type send)
+        : m_recv(recv), m_send(send), m_id(id) {
+    }
+
     callback_type m_recv = [](const auto) {
     };
 

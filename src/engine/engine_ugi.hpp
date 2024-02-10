@@ -1,11 +1,10 @@
 #ifndef ENGINE_UGI_HPP
 #define ENGINE_UGI_HPP
 
-#include <memory>
 #include <string>
 #include "engine_process.hpp"
 
-class UGIEngine : public ProcessEngine {
+class UGIEngine final : public ProcessEngine {
    public:
     [[nodiscard]] UGIEngine(const id_type id, const std::string &path, const std::string &parameters);
 
@@ -21,17 +20,19 @@ class UGIEngine : public ProcessEngine {
 
     [[nodiscard]] auto is_gameover() const noexcept -> bool;
 
-    void ugi();
+    virtual auto init() -> void override;
 
-    void isready();
+    virtual auto is_ready() -> void override;
 
-    void newgame();
+    virtual auto newgame() -> void override;
 
-    void quit();
+    virtual auto quit() -> void override;
 
-    void stop();
+    virtual auto stop() -> void override;
 
     virtual auto position(const Game &game) -> void override;
+
+    virtual auto set_option(const std::string &name, const std::string &value) -> void override;
 
     [[nodiscard]] virtual auto go(const SearchSettings &settings) -> std::string override;
 
@@ -39,9 +40,7 @@ class UGIEngine : public ProcessEngine {
 
     [[nodiscard]] virtual auto query_gameover() -> bool override;
 
-    [[nodiscard]] virtual auto query_result() -> GameResult override;
-
-    auto set_option(const std::string &name, const std::string &value) -> void;
+    [[nodiscard]] virtual auto query_result() -> std::string override;
 
    private:
 };

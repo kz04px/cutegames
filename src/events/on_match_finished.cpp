@@ -3,7 +3,7 @@
 
 auto on_match_finished(const std::shared_ptr<libevents::Event> &,
                        bool &quit,
-                       Store<UGIEngine> &engine_store,
+                       Store<Engine> &engine_store,
                        libevents::Dispatcher &dispatcher) noexcept -> void {
     quit = true;
 

@@ -1,5 +1,24 @@
 #include "engine_ugi.hpp"
+#include <iostream>
+#include <string_view>
+#include <thread>
 #include <utils.hpp>
+
+[[nodiscard]] auto make_engine(const EngineSettings &settings, const bool debug = false) -> std::shared_ptr<UGIEngine> {
+    if (debug) {
+        const auto debug_recv = [](const std::string_view &msg) {
+            std::cout << "<recv:" << std::this_thread::get_id() << "> " << msg << "\n";
+        };
+
+        const auto debug_send = [](const std::string_view &msg) {
+            std::cout << "<send:" << std::this_thread::get_id() << "> " << msg << "\n";
+        };
+
+        return std::make_shared<UGIEngine>(settings.id, settings.path, settings.parameters, debug_recv, debug_send);
+    } else {
+        return std::make_shared<UGIEngine>(settings.id, settings.path, settings.parameters);
+    }
+}
 
 [[nodiscard]] UGIEngine::UGIEngine(const id_type id, const std::string &path, const std::string &parameters)
     : ProcessEngine(id, path, parameters) {
@@ -25,26 +44,30 @@ UGIEngine::~UGIEngine() {
     return true;
 }
 
-void UGIEngine::ugi() {
+auto UGIEngine::init() -> void {
     send("ugi");
     wait_for("ugiok");
 }
 
-void UGIEngine::isready() {
+auto UGIEngine::is_ready() -> void {
     send("isready");
     wait_for("readyok");
 }
 
-void UGIEngine::newgame() {
+auto UGIEngine::newgame() -> void {
     send("uginewgame");
 }
 
-void UGIEngine::quit() {
+auto UGIEngine::quit() -> void {
     send("quit");
 }
 
-void UGIEngine::stop() {
+auto UGIEngine::stop() -> void {
     send("stop");
+}
+
+auto UGIEngine::set_option(const std::string &name, const std::string &value) -> void {
+    send("setoption name " + name + " value " + value);
 }
 
 auto UGIEngine::position(const Game &game) -> void {
@@ -160,10 +183,10 @@ auto UGIEngine::position(const Game &game) -> void {
     return is_gameover;
 }
 
-[[nodiscard]] auto UGIEngine::query_result() -> GameResult {
+[[nodiscard]] auto UGIEngine::query_result() -> std::string {
     send("query result");
 
-    auto result = GameResult::None;
+    std::string result;
 
     wait_for([&result](const auto &msg) {
         const auto parts = utils::split(msg);
@@ -176,22 +199,10 @@ auto UGIEngine::position(const Game &game) -> void {
             return false;
         }
 
-        if (parts[1] == "p1win") {
-            result = GameResult::Player1Win;
-        } else if (parts[1] == "p2win") {
-            result = GameResult::Player2Win;
-        } else if (parts[1] == "draw") {
-            result = GameResult::Draw;
-        } else if (parts[1] == "none") {
-            result = GameResult::None;
-        }
+        result = parts[1];
 
         return true;
     });
 
     return result;
-}
-
-auto UGIEngine::set_option(const std::string &name, const std::string &value) -> void {
-    send("setoption name " + name + " value " + value);
 }

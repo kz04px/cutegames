@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <vector>
-#include "../engine/engine_ugi.hpp"
+#include "../engine/engine.hpp"
 #include "events.hpp"
 #include "match.hpp"
 #include "settings.hpp"
@@ -27,7 +27,7 @@ auto on_engine_unloaded(const std::shared_ptr<libevents::Event> &,
 
 auto on_match_finished(const std::shared_ptr<libevents::Event> &,
                        bool &,
-                       Store<UGIEngine> &,
+                       Store<Engine> &,
                        libevents::Dispatcher &) noexcept -> void;
 
 #endif

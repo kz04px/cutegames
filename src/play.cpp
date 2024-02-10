@@ -1,11 +1,12 @@
 #include "play.hpp"
+#include "engine/engine_ugi.hpp"
 #include "events/events.hpp"
 #include "games/ugigame.hpp"
 
 [[nodiscard]] auto get_engine(const MatchSettings &settings,
                               libevents::Dispatcher &dispatcher,
-                              Store<UGIEngine> &engine_store,
-                              const std::size_t id) -> std::shared_ptr<UGIEngine> {
+                              Store<Engine> &engine_store,
+                              const std::size_t id) -> std::shared_ptr<Engine> {
     auto e = engine_store.get([id](const auto &obj) noexcept -> bool {
         return id == obj->get_id();
     });
@@ -20,7 +21,7 @@
 
     // Return new engine instance
     auto ptr = make_engine(settings.engine_settings[id], settings.debug);
-    ptr->ugi();
+    ptr->init();
 
     // Set options
     for (const auto &[name, value] : settings.engine_settings[id].options) {
@@ -36,15 +37,15 @@ void play_game(const std::size_t game_id,
                const std::size_t engine2_id,
                const MatchSettings &settings,
                libevents::Dispatcher &dispatcher,
-               Store<UGIEngine> &engine_store) {
+               Store<Engine> &engine_store) {
     // Game started
     dispatcher.post_event(std::make_shared<GameStarted>(game_id, fen, engine1_id, engine2_id));
 
     auto engine1 = get_engine(settings, dispatcher, engine_store, engine1_id);
     auto engine2 = get_engine(settings, dispatcher, engine_store, engine2_id);
 
-    engine1->isready();
-    engine2->isready();
+    engine1->is_ready();
+    engine2->is_ready();
 
     engine1->newgame();
     engine2->newgame();
@@ -73,7 +74,7 @@ void play_game(const std::size_t game_id,
         auto &us = is_p1_turn ? engine1 : engine2;
 
         // Inform the engine of the current position
-        us->isready();
+        us->is_ready();
         us->position(pos);
 
         // Ask if the game is over
@@ -85,7 +86,7 @@ void play_game(const std::size_t game_id,
         // Should we ask the other engine if the game is over?
         if (settings.protocol.gameover == QueryGameover::Both) {
             auto &them = is_p1_turn ? engine2 : engine1;
-            them->isready();
+            them->is_ready();
             them->position(pos);
             if (them->query_gameover()) {
                 gameover_claimed = true;
@@ -152,12 +153,12 @@ void play_game(const std::size_t game_id,
         result = pos.turn() == Side::Player1 ? GameResult::Player2Win : GameResult::Player1Win;
         adjudicated = AdjudicationReason::Timeout;
     } else if (gameover_claimed) {
-        engine1->isready();
+        engine1->is_ready();
         engine1->position(pos);
         const auto gameover1 = engine1->query_gameover();
         const auto result1 = engine1->query_result();
 
-        engine2->isready();
+        engine2->is_ready();
         engine2->position(pos);
         const auto gameover2 = engine2->query_gameover();
         const auto result2 = engine2->query_result();
@@ -167,7 +168,15 @@ void play_game(const std::size_t game_id,
         } else if (result1 != result2) {
             adjudicated = AdjudicationReason::ResultMismatch;
         } else {
-            result = result1;
+            if (result1 == "p1win") {
+                result = GameResult::Player1Win;
+            } else if (result1 == "p2win") {
+                result = GameResult::Player2Win;
+            } else if (result1 == "draw") {
+                result = GameResult::Draw;
+            } else {
+                result = GameResult::None;
+            }
         }
     }
 

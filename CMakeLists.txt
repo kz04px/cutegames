@@ -58,7 +58,6 @@ add_executable(
     src/settings.cpp
 
     # Engine
-    src/engine/engine.cpp
     src/engine/engine_process.cpp
     src/engine/engine_ugi.cpp
 
