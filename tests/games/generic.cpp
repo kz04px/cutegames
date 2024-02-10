@@ -251,3 +251,46 @@ TEST_CASE("Generic - Player 2 wins") {
 
     REQUIRE(num_engine1_wins == fens.size());
 }
+
+TEST_CASE("Generic - Draw") {
+    const std::array fens = {
+        "o1-----/-------/-------/-------/-------/-------/x1----- x 0 1",
+        "o1-----/-------/-------/-------/-------/-------/x1----- o 0 1",
+        "x------/-------/-------/-------/-------/-------/o------ x 0 1",
+        "x------/-------/-------/-------/-------/-------/o------ o 0 1",
+        "x-1----/-------/-------/-------/-------/-------/o------ x 0 1",
+        "x-1----/-------/-------/-------/-------/-------/o------ o 0 1",
+        "x------/-------/-------/-------/-------/-------/o-1---- x 0 1",
+        "x------/-------/-------/-------/-------/-------/o-1---- o 0 1",
+        "x-1----/-------/-------/-------/-------/-------/o-1---- x 0 1",
+        "x-1----/-------/-------/-------/-------/-------/o-1---- o 0 1",
+        "xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx/-------/-------/o-1---- x 0 1",
+        "xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx/-------/-------/o-1---- o 0 1",
+        "ooooooo/ooooooo/ooooooo/ooooooo/-------/-------/x-1---- x 0 1",
+        "ooooooo/ooooooo/ooooooo/ooooooo/-------/-------/x-1---- o 0 1",
+        "x5o/7/7/7/7/7/o5x x 100 1",
+        "x5o/7/7/7/7/7/o5x o 100 1",
+    };
+
+    const auto game_type = GameType::Generic;
+    const auto timecontrol = SearchSettings{};
+    const auto adjudication = AdjudicationSettings{};
+    const auto protocol = ProtocolSettings{};
+    auto engine1 = std::make_shared<TestEngine>();
+    auto engine2 = std::make_shared<TestEngine>();
+
+    for (const auto &fen : fens) {
+        for (const auto is_engine1_p1 : {true, false}) {
+            const auto &p1 = is_engine1_p1 ? engine1 : engine2;
+            const auto &p2 = is_engine1_p1 ? engine2 : engine1;
+            const auto gg = play_game(game_type, timecontrol, adjudication, protocol, fen, p1, p2);
+            const auto pos = get_final(gg.game);
+
+            REQUIRE(gg.reason == AdjudicationReason::None);
+            REQUIRE(pos.is_gameover());
+            REQUIRE(gg.result == GameResult::Draw);
+            REQUIRE(pos.get_result() == libataxx::Result::Draw);
+            REQUIRE(gg.game->start_fen() == fen);
+        }
+    }
+}
