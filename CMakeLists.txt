@@ -85,11 +85,15 @@ add_executable(
 
     tests/main.cpp
     tests/events.cpp
+    tests/play.cpp
     tests/store.cpp
 
     # Tournaments
     tests/tournament/gauntlet.cpp
     tests/tournament/roundrobin.cpp
+
+    # CuteGames
+    src/match/play.cpp
 )
 
 target_link_libraries(
@@ -104,6 +108,7 @@ target_link_libraries(
 target_link_libraries(
     tests
     doctest::doctest
+    ataxx_static
 )
 
 set_property(TARGET tests PROPERTY INTERPROCEDURAL_OPTIMIZATION_RELEASE FALSE)
