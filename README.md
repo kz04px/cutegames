@@ -55,6 +55,6 @@ Cute Games is released under the MIT license.
 ## __Thanks__
 - [doctest](https://github.com/doctest/doctest) -- The fastest feature-rich C++11/14/17/20 single-header testing framework -- MIT License
 - [CLI11](https://github.com/CLIUtils/CLI11) -- CLI11 is a command line parser for C++11 and beyond that provides a rich feature set with a simple and intuitive interface.
-- [JSON](https://github.com/nlohmann/json) -- JSON for Modern C++ -- MIT LIcense
+- [JSON](https://github.com/nlohmann/json) -- JSON for Modern C++ -- MIT License
 - [Termcolor](https://github.com/ikalnytskyi/termcolor) -- Termcolor is a header-only C++ library for printing colored messages to the terminal. Written just for fun with a help of the Force.
 - [Boost Process](https://github.com/klemens-morgenstern/boost-process) -- Boost.Process is a library to manage system processes -- BSL 1.0
