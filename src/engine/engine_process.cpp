@@ -43,19 +43,6 @@ auto ProcessEngine::wait_for(const std::string &msg) -> void {
     }
 }
 
-auto ProcessEngine::wait_for(const std::string &msg, const callback_type func) -> void {
-    std::string line;
-    while (is_running()) {
-        std::getline(m_out, line);
-        m_recv(line);
-        if (line == msg) {
-            break;
-        } else {
-            func(line);
-        }
-    }
-}
-
 auto ProcessEngine::wait_for(const std::function<bool(const std::string_view msg)> func) -> void {
     std::string line;
     auto exit = false;

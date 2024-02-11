@@ -26,8 +26,6 @@ class ProcessEngine : public Engine {
 
     auto wait_for(const std::string &msg) -> void;
 
-    auto wait_for(const std::string &msg, const callback_type func) -> void;
-
     auto wait_for(const std::function<bool(const std::string_view msg)> func) -> void;
 
    private:
