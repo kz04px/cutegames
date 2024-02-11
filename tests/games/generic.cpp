@@ -1,5 +1,5 @@
 #include <doctest/doctest.h>
-#include <engine/engine_process.hpp>
+#include <engine/engine.hpp>
 #include <games/ataxx.hpp>
 #include <libataxx/position.hpp>
 #include <match/play.hpp>
