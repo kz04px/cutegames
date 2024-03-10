@@ -46,6 +46,7 @@ class TestEngine final : public Engine {
     }
 
     [[nodiscard]] virtual auto go(const SearchSettings &) -> std::string override {
+        num_go_received++;
         const auto moves = m_pos.legal_moves();
         std::stringstream ss;
         ss << moves.at(0);
@@ -74,6 +75,8 @@ class TestEngine final : public Engine {
                 throw std::runtime_error("Invalid game result");
         }
     }
+
+    int num_go_received = 0;
 
    private:
     libataxx::Position m_pos;
@@ -128,6 +131,9 @@ TEST_CASE("Generic - Play games") {
 
     for (const auto &fen : fens) {
         for (const auto is_engine1_p1 : {true, false}) {
+            engine1->num_go_received = 0;
+            engine2->num_go_received = 0;
+
             const auto &p1 = is_engine1_p1 ? engine1 : engine2;
             const auto &p2 = is_engine1_p1 ? engine2 : engine1;
             const auto gg = play_game(game_type, timecontrol, adjudication, protocol, fen, p1, p2);
@@ -136,6 +142,7 @@ TEST_CASE("Generic - Play games") {
             REQUIRE(gg.reason == AdjudicationReason::None);
             REQUIRE(pos.is_gameover());
             REQUIRE(gg.game->start_fen() == fen);
+            REQUIRE(std::abs(engine1->num_go_received - engine2->num_go_received) <= 1);
 
             // Game result
             switch (gg.result) {
@@ -191,6 +198,9 @@ TEST_CASE("Generic - Player 1 wins") {
 
     for (const auto &fen : fens) {
         for (const auto is_engine1_p1 : {true, false}) {
+            engine1->num_go_received = 0;
+            engine2->num_go_received = 0;
+
             const auto &p1 = is_engine1_p1 ? engine1 : engine2;
             const auto &p2 = is_engine1_p1 ? engine2 : engine1;
             const auto gg = play_game(game_type, timecontrol, adjudication, protocol, fen, p1, p2);
@@ -201,6 +211,7 @@ TEST_CASE("Generic - Player 1 wins") {
             REQUIRE(gg.result == GameResult::Player1Win);
             REQUIRE(pos.get_result() == libataxx::Result::BlackWin);
             REQUIRE(gg.game->start_fen() == fen);
+            REQUIRE(std::abs(engine1->num_go_received - engine2->num_go_received) <= 1);
 
             num_engine1_wins += is_engine1_p1;
             num_engine2_wins += !is_engine1_p1;
@@ -231,6 +242,9 @@ TEST_CASE("Generic - Player 2 wins") {
 
     for (const auto &fen : fens) {
         for (const auto is_engine1_p1 : {true, false}) {
+            engine1->num_go_received = 0;
+            engine2->num_go_received = 0;
+
             const auto &p1 = is_engine1_p1 ? engine1 : engine2;
             const auto &p2 = is_engine1_p1 ? engine2 : engine1;
             const auto gg = play_game(game_type, timecontrol, adjudication, protocol, fen, p1, p2);
@@ -241,6 +255,7 @@ TEST_CASE("Generic - Player 2 wins") {
             REQUIRE(gg.result == GameResult::Player2Win);
             REQUIRE(pos.get_result() == libataxx::Result::WhiteWin);
             REQUIRE(gg.game->start_fen() == fen);
+            REQUIRE(std::abs(engine1->num_go_received - engine2->num_go_received) <= 1);
 
             num_engine1_wins += !is_engine1_p1;
             num_engine2_wins += is_engine1_p1;
@@ -281,6 +296,9 @@ TEST_CASE("Generic - Draw") {
 
     for (const auto &fen : fens) {
         for (const auto is_engine1_p1 : {true, false}) {
+            engine1->num_go_received = 0;
+            engine2->num_go_received = 0;
+
             const auto &p1 = is_engine1_p1 ? engine1 : engine2;
             const auto &p2 = is_engine1_p1 ? engine2 : engine1;
             const auto gg = play_game(game_type, timecontrol, adjudication, protocol, fen, p1, p2);
@@ -291,6 +309,7 @@ TEST_CASE("Generic - Draw") {
             REQUIRE(gg.result == GameResult::Draw);
             REQUIRE(pos.get_result() == libataxx::Result::Draw);
             REQUIRE(gg.game->start_fen() == fen);
+            REQUIRE(std::abs(engine1->num_go_received - engine2->num_go_received) <= 1);
         }
     }
 }
