@@ -50,7 +50,7 @@ auto play_game(const GameType game_type,
             game->set_turn(is_p1_turn ? Side::Player1 : Side::Player2);
         }
 
-        const auto is_p1_turn = game->turn() == Side::Player1;
+        const auto is_p1_turn = game->is_p1_turn(engine1);
         auto &us = is_p1_turn ? engine1 : engine2;
         auto &them = is_p1_turn ? engine2 : engine1;
 
