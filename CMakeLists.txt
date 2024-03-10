@@ -86,6 +86,8 @@ add_executable(
     tests/main.cpp
     tests/events.cpp
     tests/store.cpp
+    tests/elo.cpp
+    tests/sprt.cpp
 
     # Games
     tests/games/ataxx.cpp
