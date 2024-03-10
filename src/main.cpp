@@ -235,7 +235,7 @@ auto main(const int argc, const char *const *const argv) noexcept -> int {
         workers.emplace_back([&]() {
             auto engine_store = Store<Engine>(settings.engine_store_size);
 
-            while (true) {
+            while (!quit) {
                 // Get work
                 const auto info = [&generator, &mtx]() -> std::optional<GameInfo> {
                     std::scoped_lock lock(mtx);
