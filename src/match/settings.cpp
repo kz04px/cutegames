@@ -39,6 +39,9 @@ auto print_settings(const MatchSettings &settings) noexcept -> void {
         case GameType::Ataxx:
             std::cout << "\nUsing first class support for Ataxx\n";
             break;
+        case GameType::Chess:
+            std::cout << "\nUsing first class support for Chess\n";
+            break;
     }
 }
 
@@ -74,6 +77,8 @@ auto print_settings(const MatchSettings &settings) noexcept -> void {
                 settings.game_type = GameType::Generic;
             } else if (value == "ataxx") {
                 settings.game_type = GameType::Ataxx;
+            } else if (value == "chess") {
+                settings.game_type = GameType::Chess;
             } else {
                 throw std::invalid_argument("Unrecognised game type");
             }
@@ -223,6 +228,8 @@ auto print_settings(const MatchSettings &settings) noexcept -> void {
                         throw std::invalid_argument("Generic game mode must use the UGI protocol");
                     } else if (b == "UAI") {
                         gg.protocol = EngineProtocol::UAI;
+                    } else if (b == "UCI") {
+                        gg.protocol = EngineProtocol::UCI;
                     }
                 }
             } else if (a == "parameters") {

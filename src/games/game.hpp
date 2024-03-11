@@ -10,6 +10,7 @@ enum class [[nodiscard]] GameType
 {
     Generic = 0,
     Ataxx,
+    Chess,
 };
 
 enum class [[nodiscard]] GameResult

@@ -38,7 +38,13 @@ FetchContent_Declare(
     GIT_TAG 8fa7dd3115552548aec6764e9cbe989f2430b239
 )
 
-FetchContent_MakeAvailable(json doctest cli11 termcolor libataxx)
+FetchContent_Declare(
+    libchess
+    GIT_REPOSITORY https://github.com/kz04px/libchess
+    GIT_TAG fda27a1f2c71b157561b6f45a42e085ce6ae620b
+)
+
+FetchContent_MakeAvailable(json doctest cli11 termcolor libataxx libchess)
 
 find_package(Threads REQUIRED)
 
@@ -69,6 +75,7 @@ add_executable(
     # Engine
     src/engine/engine_process.cpp
     src/engine/engine_uai.cpp
+    src/engine/engine_uci.cpp
     src/engine/engine_ugi.cpp
 
     # Events
@@ -91,6 +98,7 @@ add_executable(
 
     # Games
     tests/games/ataxx.cpp
+    tests/games/chess.cpp
     tests/games/generic.cpp
 
     # Tournaments
@@ -108,12 +116,14 @@ target_link_libraries(
     nlohmann_json::nlohmann_json
     termcolor::termcolor
     ataxx_static
+    libchess_static
 )
 
 target_link_libraries(
     tests
     doctest::doctest
     ataxx_static
+    libchess_static
 )
 
 set_property(TARGET tests PROPERTY INTERPROCEDURAL_OPTIMIZATION_RELEASE FALSE)

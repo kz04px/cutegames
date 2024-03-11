@@ -10,6 +10,7 @@ enum class [[nodiscard]] EngineProtocol
 {
     UGI,
     UAI,
+    UCI,
 };
 
 struct [[nodiscard]] EngineStatistics {

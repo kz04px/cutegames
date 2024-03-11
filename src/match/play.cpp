@@ -1,5 +1,6 @@
 #include "play.hpp"
 #include "games/ataxx.hpp"
+#include "games/chess.hpp"
 #include "games/game.hpp"
 #include "games/ugigame.hpp"
 #include "settings.hpp"
@@ -10,6 +11,8 @@
             return std::make_shared<UGIGame>(fen);
         case GameType::Ataxx:
             return std::make_shared<AtaxxGame>(fen);
+        case GameType::Chess:
+            return std::make_shared<ChessGame>(fen);
         default:
             throw std::invalid_argument("Unrecognised game type");
     }

@@ -22,6 +22,7 @@
 #include "tournament/roundrobin.hpp"
 // Engines
 #include "engine/engine_uai.hpp"
+#include "engine/engine_uci.hpp"
 #include "engine/engine_ugi.hpp"
 // Stuff
 #include "cutegames.hpp"
@@ -37,6 +38,8 @@
                 return std::make_shared<UGIEngine>(settings.id, settings.path, settings.parameters);
             case GameType::Ataxx:
                 return std::make_shared<UAIEngine>(settings.id, settings.path, settings.parameters);
+            case GameType::Chess:
+                return std::make_shared<UCIEngine>(settings.id, settings.path, settings.parameters);
             default:
                 throw std::invalid_argument("Unrecognised game type");
         }
@@ -57,6 +60,9 @@
                     settings.id, settings.path, settings.parameters, debug_recv, debug_send);
             case GameType::Ataxx:
                 return std::make_shared<UAIEngine>(
+                    settings.id, settings.path, settings.parameters, debug_recv, debug_send);
+            case GameType::Chess:
+                return std::make_shared<UCIEngine>(
                     settings.id, settings.path, settings.parameters, debug_recv, debug_send);
             default:
                 throw std::invalid_argument("Unrecognised game type");
@@ -88,6 +94,9 @@ auto print_engine_settings(const std::vector<EngineSettings> &engine_settings) n
                 break;
             case EngineProtocol::UAI:
                 std::cout << " UAI";
+                break;
+            case EngineProtocol::UCI:
+                std::cout << " UCI";
                 break;
         }
         std::cout << " " << data.path;
