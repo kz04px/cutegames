@@ -35,6 +35,15 @@ Cute Games can not handle games such as:
 
 ---
 
+## __First class support__
+CuteGames directly supports a select few games and can provide additional features for them, such as move legality checks or using engine protocols from those games. First class games can still be played by engines using the UGI protocol. This includes playing UGI engines against those using a game's native protocol.
+
+First class games:
+- Ataxx with the UAI protocol
+- Chess with the UCI protocol
+
+---
+
 ## __Build__
 CMake, a C++20 compiler, and the boost library are required.
 ```
@@ -58,3 +67,5 @@ Cute Games is released under the MIT license.
 - [JSON](https://github.com/nlohmann/json) -- JSON for Modern C++ -- MIT License
 - [Termcolor](https://github.com/ikalnytskyi/termcolor) -- Termcolor is a header-only C++ library for printing colored messages to the terminal. Written just for fun with a help of the Force.
 - [Boost Process](https://github.com/klemens-morgenstern/boost-process) -- Boost.Process is a library to manage system processes -- BSL 1.0
+- [libataxx](https://github.com/kz04px/libataxx) -- A C++ Ataxx library to handle move generation, move validation, and other aspects of the board game Ataxx
+- [libchess](https://github.com/kz04px/libchess) -- C++ chess library
