@@ -4,15 +4,15 @@
 #include <random>
 
 [[nodiscard]] auto get_openings(const std::string &path, const bool shuffle) -> std::vector<std::string> {
-    auto f = std::ifstream(path);
+    auto file = std::ifstream(path);
 
-    if (!f.is_open()) {
+    if (!file.is_open()) {
         throw std::invalid_argument("Opening file not found");
     }
 
     auto openings = std::vector<std::string>();
     std::string line;
-    while (std::getline(f, line)) {
+    while (std::getline(file, line)) {
         if (line.empty() || line[0] == '#') {
             continue;
         }

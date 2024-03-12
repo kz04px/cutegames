@@ -19,7 +19,7 @@ auto play_game(const GameType game_type,
                const AdjudicationSettings &adjudication,
                const ProtocolSettings &protocol,
                const std::string &fen,
-               std::shared_ptr<Engine> engine1,
-               std::shared_ptr<Engine> engine2) -> GG;
+               const std::shared_ptr<Engine> &engine1,
+               const std::shared_ptr<Engine> &engine2) -> GG;
 
 #endif

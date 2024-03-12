@@ -12,7 +12,7 @@
 #include "print.hpp"
 
 [[nodiscard]] constexpr auto get_score(const int w, const int l, const int d) -> float {
-    return static_cast<float>(2 * w + d) / (2 * (w + d + l));
+    return static_cast<float>(2 * w + d) / static_cast<float>(2 * (w + d + l));
 }
 
 [[nodiscard]] constexpr auto should_update(const int num, const int frequency) noexcept -> bool {

@@ -43,52 +43,52 @@ auto write_as_pgn(const PGNSettings &settings,
                   const std::string &player2,
                   const GameResult result,
                   const AdjudicationReason reason,
-                  const std::shared_ptr<Game> game) -> void {
-    std::ofstream f(settings.path, std::fstream::out | std::fstream::app);
-    if (!f.is_open()) {
+                  const std::shared_ptr<Game> &game) -> void {
+    std::ofstream file(settings.path, std::fstream::out | std::fstream::app);
+    if (!file.is_open()) {
         return;
     }
 
-    f << "[Event \"" << settings.event << "\"]\n";
-    f << "[Site \"CuteGames\"]\n";
-    f << "[Date \"??\"]\n";
-    f << "[Round \"1\"]\n";
-    f << "[" << settings.colour1 << " \"" << player1 << "\"]\n";
-    f << "[" << settings.colour2 << " \"" << player2 << "\"]\n";
-    f << "[Result \"" << result_string(result) << "\"]\n";
-    f << "[FEN \"" << game->start_fen() << "\"]\n";
+    file << "[Event \"" << settings.event << "\"]\n";
+    file << "[Site \"CuteGames\"]\n";
+    file << "[Date \"??\"]\n";
+    file << "[Round \"1\"]\n";
+    file << "[" << settings.colour1 << " \"" << player1 << "\"]\n";
+    file << "[" << settings.colour2 << " \"" << player2 << "\"]\n";
+    file << "[Result \"" << result_string(result) << "\"]\n";
+    file << "[FEN \"" << game->start_fen() << "\"]\n";
     if (reason != AdjudicationReason::None) {
-        f << "[Adjudicated \"" << adjudication_string(reason) << "\"]\n";
+        file << "[Adjudicated \"" << adjudication_string(reason) << "\"]\n";
     }
     if (result == GameResult::Player1Win) {
-        f << "[Winner \"" << player1 << "\"]\n";
-        f << "[Loser \"" << player2 << "\"]\n";
+        file << "[Winner \"" << player1 << "\"]\n";
+        file << "[Loser \"" << player2 << "\"]\n";
     } else if (result == GameResult::Player2Win) {
-        f << "[Winner \"" << player2 << "\"]\n";
-        f << "[Loser \"" << player1 << "\"]\n";
+        file << "[Winner \"" << player2 << "\"]\n";
+        file << "[Loser \"" << player1 << "\"]\n";
     }
-    f << "[PlyCount \"" << game->move_history().size() << "\"]\n";
-    f << "\n";
+    file << "[PlyCount \"" << game->move_history().size() << "\"]\n";
+    file << "\n";
 
     auto ply = 0;
 
     const auto p2_first = game->get_first_mover() == Side::Player2;
     if (p2_first) {
-        f << "1... ";
+        file << "1... ";
         ply++;
     }
 
     for (const auto &movestr : game->move_history()) {
         if (ply % 2 == 0) {
-            f << ply / 2 + 1 << ". ";
+            file << ply / 2 + 1 << ". ";
         }
 
-        f << movestr << " ";
+        file << movestr << " ";
 
         ply++;
     }
 
-    f << result_string(result) << "\n";
+    file << result_string(result) << "\n";
 
-    f << "\n\n";
+    file << "\n\n";
 }

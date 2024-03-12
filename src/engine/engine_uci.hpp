@@ -4,7 +4,7 @@
 #include <string>
 #include "engine_process.hpp"
 
-class UCIEngine final : public ProcessEngine {
+class [[nodiscard]] UCIEngine final : public ProcessEngine {
    public:
     [[nodiscard]] UCIEngine(const id_type id, const std::string &path, const std::string &parameters);
 
@@ -14,33 +14,31 @@ class UCIEngine final : public ProcessEngine {
                             callback_type recv,
                             callback_type send);
 
-    virtual ~UCIEngine();
+    ~UCIEngine() override;
 
     [[nodiscard]] auto is_gameover() const noexcept -> bool;
 
-    virtual auto init() -> void override;
+    auto init() -> void override;
 
-    virtual auto is_ready() -> void override;
+    auto is_ready() -> void override;
 
-    virtual auto newgame() -> void override;
+    auto newgame() -> void override;
 
-    virtual auto quit() -> void override;
+    auto quit() -> void override;
 
-    virtual auto stop() -> void override;
+    auto stop() -> void override;
 
-    virtual auto position(const std::string &start_fen, const std::vector<std::string> &move_history) -> void override;
+    auto position(const std::string &start_fen, const std::vector<std::string> &move_history) -> void override;
 
-    virtual auto set_option(const std::string &name, const std::string &value) -> void override;
+    auto set_option(const std::string &name, const std::string &value) -> void override;
 
-    [[nodiscard]] virtual auto go(const SearchSettings &settings) -> std::string override;
+    [[nodiscard]] auto go(const SearchSettings &settings) -> std::string override;
 
-    [[nodiscard]] virtual auto query_p1turn() -> bool override;
+    [[nodiscard]] auto query_p1turn() -> bool override;
 
-    [[nodiscard]] virtual auto query_gameover() -> bool override;
+    [[nodiscard]] auto query_gameover() -> bool override;
 
-    [[nodiscard]] virtual auto query_result() -> std::string override;
-
-   private:
+    [[nodiscard]] auto query_result() -> std::string override;
 };
 
 #endif

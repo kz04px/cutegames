@@ -52,7 +52,7 @@ class Store {
     };
     */
 
-    [[nodiscard]] Store(const std::size_t capacity) : m_capacity(capacity) {
+    [[nodiscard]] explicit Store(const std::size_t capacity) : m_capacity(capacity) {
     }
 
     [[nodiscard]] auto get(const std::function<bool(const entry_ptr_type &)> &func) -> std::optional<entry_ptr_type> {

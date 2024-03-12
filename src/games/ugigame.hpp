@@ -3,42 +3,36 @@
 
 #include "game.hpp"
 
-class UGIGame final : public Game {
+class [[nodiscard]] UGIGame final : public Game {
    public:
-    [[nodiscard]] UGIGame() : Game() {
+    [[nodiscard]] explicit UGIGame(const std::string &fen) : Game(fen) {
     }
 
-    [[nodiscard]] UGIGame(const std::string &fen) : Game(fen) {
-    }
+    ~UGIGame() override = default;
 
-    virtual ~UGIGame() = default;
-
-    virtual void makemove(const std::string &movestr) override {
+    void makemove(const std::string &movestr) override {
         m_move_history.emplace_back(movestr);
         m_turn = !m_turn;
     }
 
-    [[nodiscard]] virtual auto is_p1_turn(std::shared_ptr<Engine> engine) const -> bool override {
+    [[nodiscard]] auto is_p1_turn(std::shared_ptr<Engine> engine) const -> bool override {
         engine->position(start_fen(), move_history());
         return engine->query_p1turn();
     }
 
-    [[nodiscard]] virtual bool is_gameover(std::shared_ptr<Engine> engine) const noexcept override {
+    [[nodiscard]] bool is_gameover(std::shared_ptr<Engine> engine) const noexcept override {
         engine->position(start_fen(), move_history());
         return engine->query_gameover();
     }
 
-    [[nodiscard]] virtual auto is_legal_move(const std::string &,
-                                             std::shared_ptr<Engine>) const noexcept -> bool override {
+    [[nodiscard]] auto is_legal_move(const std::string &, std::shared_ptr<Engine>) const noexcept -> bool override {
         return true;
     }
 
-    [[nodiscard]] virtual auto get_result(std::shared_ptr<Engine> engine) const noexcept -> std::string override {
+    [[nodiscard]] auto get_result(std::shared_ptr<Engine> engine) const noexcept -> std::string override {
         engine->position(start_fen(), move_history());
         return engine->query_result();
     }
-
-   protected:
 };
 
 #endif

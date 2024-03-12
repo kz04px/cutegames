@@ -355,7 +355,7 @@ auto main(const int argc, const char *const *const argv) noexcept -> int {
     std::cout << " " << tod.seconds().count() << "s";
     std::cout << "\n";
     if (dt.count() > 0 && stats.num_games_finished > 0) {
-        const auto games_per_ms = static_cast<float>(stats.num_games_finished) / dt.count();
+        const auto games_per_ms = static_cast<float>(stats.num_games_finished) / static_cast<float>(dt.count());
         const auto games_per_s = games_per_ms * 1'000;
         const auto games_per_min = games_per_ms * 60'000;
         std::cout << "Games/min: " << games_per_min << "\n";

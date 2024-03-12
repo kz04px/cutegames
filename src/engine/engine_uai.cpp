@@ -1,4 +1,5 @@
 #include "engine_uai.hpp"
+#include <utility>
 #include <utils.hpp>
 
 [[nodiscard]] UAIEngine::UAIEngine(const id_type id, const std::string &path, const std::string &parameters)
@@ -10,7 +11,7 @@
                                    const std::string &parameters,
                                    callback_type recv,
                                    callback_type send)
-    : ProcessEngine(id, path, parameters, recv, send) {
+    : ProcessEngine(id, path, parameters, std::move(recv), std::move(send)) {
 }
 
 UAIEngine::~UAIEngine() {

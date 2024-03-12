@@ -17,8 +17,7 @@ struct [[nodiscard]] GameInfo {
 
 class TournamentGenerator {
    public:
-    virtual ~TournamentGenerator() {
-    }
+    virtual ~TournamentGenerator() = default;
 
     [[nodiscard]] virtual auto is_finished() -> bool = 0;
 

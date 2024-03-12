@@ -5,7 +5,7 @@
 #include "games/ugigame.hpp"
 #include "settings.hpp"
 
-[[nodiscard]] auto make_game(const GameType game_type, const std::string fen = "startpos") -> std::shared_ptr<Game> {
+[[nodiscard]] auto make_game(const GameType game_type, const std::string &fen = "startpos") -> std::shared_ptr<Game> {
     switch (game_type) {
         case GameType::Generic:
             return std::make_shared<UGIGame>(fen);
@@ -23,8 +23,8 @@ auto play_game(const GameType game_type,
                const AdjudicationSettings &adjudication,
                const ProtocolSettings &protocol,
                const std::string &fen,
-               std::shared_ptr<Engine> engine1,
-               std::shared_ptr<Engine> engine2) -> GG {
+               const std::shared_ptr<Engine> &engine1,
+               const std::shared_ptr<Engine> &engine2) -> GG {
     auto game = make_game(game_type, fen);
 
     engine1->is_ready();
@@ -54,8 +54,8 @@ auto play_game(const GameType game_type,
         }
 
         const auto is_p1_turn = game->is_p1_turn(engine1);
-        auto &us = is_p1_turn ? engine1 : engine2;
-        auto &them = is_p1_turn ? engine2 : engine1;
+        const auto &us = is_p1_turn ? engine1 : engine2;
+        const auto &them = is_p1_turn ? engine2 : engine1;
 
         // Inform the engine of the current position
         us->is_ready();

@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 #include "../engine/engine.hpp"
 
@@ -51,7 +52,7 @@ class Game {
     [[nodiscard]] Game() : m_start_fen("startpos") {
     }
 
-    [[nodiscard]] Game(const std::string &fen) : m_start_fen(fen) {
+    [[nodiscard]] explicit Game(std::string fen) : m_start_fen(std::move(fen)) {
     }
 
     virtual ~Game() = default;
@@ -83,12 +84,12 @@ class Game {
 
     virtual auto makemove(const std::string &movestr) -> void = 0;
 
-    auto set_turn(const Side s) noexcept -> void {
-        m_turn = s;
+    auto set_turn(const Side side) noexcept -> void {
+        m_turn = side;
     }
 
-    auto set_first_mover(const Side s) noexcept -> void {
-        m_first_mover = s;
+    auto set_first_mover(const Side side) noexcept -> void {
+        m_first_mover = side;
     }
 
    protected:

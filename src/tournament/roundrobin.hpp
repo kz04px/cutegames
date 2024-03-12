@@ -5,25 +5,24 @@
 #include <cstddef>
 #include "generator.hpp"
 
-class [[nodiscard]] RoundRobinGenerator : public TournamentGenerator {
+class [[nodiscard]] RoundRobinGenerator final : public TournamentGenerator {
    public:
     RoundRobinGenerator(const std::size_t players, const std::size_t games, const std::size_t openings, const bool r)
         : num_players(players), num_games(games), num_openings(openings), repeat(r) {
     }
 
-    virtual ~RoundRobinGenerator() {
-    }
+    ~RoundRobinGenerator() override = default;
 
-    [[nodiscard]] virtual auto is_finished() -> bool override {
+    [[nodiscard]] auto is_finished() -> bool override {
         return idx >= expected();
     }
 
-    [[nodiscard]] virtual auto expected() -> std::size_t override {
+    [[nodiscard]] auto expected() -> std::size_t override {
         const auto games_per_player = num_games * (num_players - 1);
         return games_per_player * num_players / 2;
     }
 
-    [[nodiscard]] virtual auto next() -> GameInfo override {
+    [[nodiscard]] auto next() -> GameInfo override {
         GameInfo result;
 
         const auto is_mirror = match_game % 2 == 1;
@@ -39,7 +38,7 @@ class [[nodiscard]] RoundRobinGenerator : public TournamentGenerator {
     }
 
    private:
-    virtual auto increment() -> void override {
+    auto increment() -> void override {
         idx++;
         match_game++;
 

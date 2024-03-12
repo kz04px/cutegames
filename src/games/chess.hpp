@@ -1,54 +1,42 @@
 #ifndef CUTEGAMES_GAMES_CHESS_HPP
 #define CUTEGAMES_GAMES_CHESS_HPP
 
-#include <exception>
-#include <iostream>
 #include <libchess/position.hpp>
 #include "game.hpp"
 
-class ChessGame final : public Game {
+class [[nodiscard]] ChessGame final : public Game {
    public:
-    [[nodiscard]] ChessGame() : Game() {
-    }
-
-    [[nodiscard]] ChessGame(const std::string &fen) : Game(fen) {
-        pos.set_fen(fen);
-        m_turn = pos.turn() == libchess::Side::White ? Side::Player1 : Side::Player2;
+    [[nodiscard]] explicit ChessGame(const std::string &fen) : Game(fen) {
+        m_pos.set_fen(fen);
+        m_turn = m_pos.turn() == libchess::Side::White ? Side::Player1 : Side::Player2;
         m_first_mover = m_turn;
     }
 
-    virtual ~ChessGame() = default;
+    ~ChessGame() override = default;
 
-    virtual void makemove(const std::string &movestr) override {
+    void makemove(const std::string &movestr) override {
         m_move_history.emplace_back(movestr);
-        try {
-            const auto move = pos.parse_move(movestr);
-            pos.makemove(move);
-        } catch (std::exception &e) {
-            std::cerr << "Move: ~" << movestr << "~" << std::endl;
-            std::cerr << "Exception: " << e.what() << std::endl;
-            std::exit(1);
-        }
+        const auto move = m_pos.parse_move(movestr);
+        m_pos.makemove(move);
     }
 
-    [[nodiscard]] virtual auto is_p1_turn(std::shared_ptr<Engine>) const -> bool override {
-        return pos.turn() == libchess::Side::White;
+    [[nodiscard]] auto is_p1_turn(std::shared_ptr<Engine>) const -> bool override {
+        return m_pos.turn() == libchess::Side::White;
     }
 
-    [[nodiscard]] virtual bool is_gameover(std::shared_ptr<Engine>) const noexcept override {
-        return pos.is_terminal();
+    [[nodiscard]] bool is_gameover(std::shared_ptr<Engine>) const noexcept override {
+        return m_pos.is_terminal();
     }
 
-    [[nodiscard]] virtual auto is_legal_move(const std::string &,
-                                             std::shared_ptr<Engine>) const noexcept -> bool override {
+    [[nodiscard]] auto is_legal_move(const std::string &, std::shared_ptr<Engine>) const noexcept -> bool override {
         return true;
     }
 
-    [[nodiscard]] virtual auto get_result(std::shared_ptr<Engine>) const noexcept -> std::string override {
-        if (pos.is_draw()) {
+    [[nodiscard]] auto get_result(std::shared_ptr<Engine>) const noexcept -> std::string override {
+        if (m_pos.is_draw()) {
             return "draw";
-        } else if (pos.is_checkmate()) {
-            if (pos.turn() == libchess::Side::White) {
+        } else if (m_pos.is_checkmate()) {
+            if (m_pos.turn() == libchess::Side::White) {
                 return "p2win";
             } else {
                 return "p1win";
@@ -58,8 +46,8 @@ class ChessGame final : public Game {
         }
     }
 
-   protected:
-    libchess::Position pos;
+   private:
+    libchess::Position m_pos;
 };
 
 #endif

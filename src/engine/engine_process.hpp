@@ -7,7 +7,7 @@
 #include <string_view>
 #include "engine.hpp"
 
-class ProcessEngine : public Engine {
+class [[nodiscard]] ProcessEngine : public Engine {
    public:
     [[nodiscard]] ProcessEngine(const id_type id, const std::string &path, const std::string &parameters);
 
@@ -17,9 +17,9 @@ class ProcessEngine : public Engine {
                                 callback_type recv,
                                 callback_type send);
 
-    virtual ~ProcessEngine();
+    ~ProcessEngine() override = default;
 
-    [[nodiscard]] virtual auto is_running() -> bool override;
+    [[nodiscard]] auto is_running() -> bool override;
 
    protected:
     auto send(const std::string &msg) -> void;

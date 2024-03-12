@@ -5,6 +5,7 @@
 #include <libevents.hpp>
 #include <string>
 #include <thread>
+#include <utility>
 #include "../games/game.hpp"
 
 enum EventID : libevents::Event::EventIDType
@@ -26,11 +27,11 @@ enum EventID : libevents::Event::EventIDType
 };
 
 struct [[nodiscard]] GameStarted final : public libevents::Event {
-    [[nodiscard]] GameStarted(const int i, const std::string &f, const int id1, const int id2)
-        : game_num(i), fen(f), engine1_id(id1), engine2_id(id2) {
+    [[nodiscard]] GameStarted(const int i, std::string f, const int id1, const int id2)
+        : game_num(i), fen(std::move(f)), engine1_id(id1), engine2_id(id2) {
     }
 
-    [[nodiscard]] virtual auto id() const noexcept -> libevents::Event::EventIDType override {
+    [[nodiscard]] auto id() const noexcept -> libevents::Event::EventIDType override {
         return EventID::zGameStarted;
     }
 
@@ -50,7 +51,7 @@ struct [[nodiscard]] GameFinished final : public libevents::Event {
         : game_num(i), engine1_id(id1), engine2_id(id2), result(r), reason(gg), game(g) {
     }
 
-    [[nodiscard]] virtual auto id() const noexcept -> libevents::Event::EventIDType override {
+    [[nodiscard]] auto id() const noexcept -> libevents::Event::EventIDType override {
         return EventID::zGameFinished;
     }
 
@@ -63,10 +64,10 @@ struct [[nodiscard]] GameFinished final : public libevents::Event {
 };
 
 struct [[nodiscard]] MovePlayed final : public libevents::Event {
-    [[nodiscard]] MovePlayed(const std::string movestr, const std::chrono::milliseconds t) : move(movestr), ms(t) {
+    [[nodiscard]] MovePlayed(std::string movestr, const std::chrono::milliseconds t) : move(std::move(movestr)), ms(t) {
     }
 
-    [[nodiscard]] virtual auto id() const noexcept -> libevents::Event::EventIDType override {
+    [[nodiscard]] auto id() const noexcept -> libevents::Event::EventIDType override {
         return EventID::zMovePlayed;
     }
 
@@ -78,16 +79,16 @@ struct [[nodiscard]] MovePlayed final : public libevents::Event {
 struct [[nodiscard]] MatchFinished final : public libevents::Event {
     [[nodiscard]] MatchFinished() = default;
 
-    [[nodiscard]] virtual auto id() const noexcept -> libevents::Event::EventIDType override {
+    [[nodiscard]] auto id() const noexcept -> libevents::Event::EventIDType override {
         return EventID::zMatchFinished;
     }
 };
 
 struct [[nodiscard]] ThreadFinished final : public libevents::Event {
-    [[nodiscard]] ThreadFinished(const std::thread::id gg) : thread_id(gg) {
+    [[nodiscard]] explicit ThreadFinished(const std::thread::id gg) : thread_id(gg) {
     }
 
-    [[nodiscard]] virtual auto id() const noexcept -> libevents::Event::EventIDType override {
+    [[nodiscard]] auto id() const noexcept -> libevents::Event::EventIDType override {
         return EventID::zThreadFinished;
     }
 
@@ -95,11 +96,11 @@ struct [[nodiscard]] ThreadFinished final : public libevents::Event {
 };
 
 struct [[nodiscard]] EngineCreated final : public libevents::Event {
-    [[nodiscard]] EngineCreated(const std::size_t a, const std::string &b, const std::string &c)
-        : engine_id(a), path(b), name(c) {
+    [[nodiscard]] EngineCreated(const std::size_t a, std::string b, std::string c)
+        : engine_id(a), path(std::move(b)), name(std::move(c)) {
     }
 
-    [[nodiscard]] virtual auto id() const noexcept -> libevents::Event::EventIDType override {
+    [[nodiscard]] auto id() const noexcept -> libevents::Event::EventIDType override {
         return EventID::zEngineLoaded;
     }
 
@@ -109,11 +110,11 @@ struct [[nodiscard]] EngineCreated final : public libevents::Event {
 };
 
 struct [[nodiscard]] EngineDestroyed final : public libevents::Event {
-    [[nodiscard]] EngineDestroyed(const std::size_t a, const std::string &b, const std::string &c)
-        : engine_id(a), path(b), name(c) {
+    [[nodiscard]] EngineDestroyed(const std::size_t a, std::string b, std::string c)
+        : engine_id(a), path(std::move(b)), name(std::move(c)) {
     }
 
-    [[nodiscard]] virtual auto id() const noexcept -> libevents::Event::EventIDType override {
+    [[nodiscard]] auto id() const noexcept -> libevents::Event::EventIDType override {
         return EventID::zEngineUnloaded;
     }
 

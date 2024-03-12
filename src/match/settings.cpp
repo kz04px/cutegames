@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include <stdexcept>
 #include "games/game.hpp"
 
 auto print_settings(const MatchSettings &settings) noexcept -> void {
@@ -59,7 +60,7 @@ auto print_settings(const MatchSettings &settings) noexcept -> void {
     } catch (nlohmann::json::exception &e) {
         throw e;
     } catch (...) {
-        throw "Failure parsing .json";
+        throw std::runtime_error("Failure parsing .json");
     }
 }
 

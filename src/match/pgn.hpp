@@ -20,6 +20,6 @@ auto write_as_pgn(const PGNSettings &settings,
                   const std::string &player2,
                   const GameResult result,
                   const AdjudicationReason reason,
-                  const std::shared_ptr<Game> game) -> void;
+                  const std::shared_ptr<Game> &game) -> void;
 
 #endif
