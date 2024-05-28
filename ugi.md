@@ -1,5 +1,5 @@
 # Universal Game Interface
-The UGI protocol is based on the UCI protocol used in chess. The only meaningful changes are an addition to the ```bestmove``` string, and the ```query``` command.
+The UGI protocol is based on the UCI protocol used in chess. The only meaningful change besides generalisation is the addition of the ```query``` and the ```response``` commands.
 
 ---
 
