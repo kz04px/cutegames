@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <fstream>
 #include <random>
+#include <CLI/StringTools.hpp>
 
 [[nodiscard]] auto get_openings(const std::string &path, const bool shuffle) -> std::vector<std::string> {
     auto file = std::ifstream(path);
@@ -13,6 +14,7 @@
     auto openings = std::vector<std::string>();
     std::string line;
     while (std::getline(file, line)) {
+        CLI::detail::trim(line);
         if (line.empty() || line[0] == '#') {
             continue;
         }
