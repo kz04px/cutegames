@@ -14,7 +14,7 @@ static constexpr auto pi = std::numbers::pi_v<float>;
     return (w + (d / 2.0f)) / (w + l + d);
 }
 
-[[nodiscard]] constexpr auto get_erf_inv(const float x) noexcept -> float {
+[[nodiscard]] auto get_erf_inv(const float x) noexcept -> float {
     const auto a = 8.0f * (pi - 3.0f) / (3.0f * pi * (4.0f - pi));
     const auto y = std::log(1.0f - x * x);
     const auto z = 2.0f / (pi * a) + y / 2.0f;
@@ -26,11 +26,11 @@ static constexpr auto pi = std::numbers::pi_v<float>;
     }
 }
 
-[[nodiscard]] constexpr auto get_phi_inv(const float p) noexcept -> float {
+[[nodiscard]] auto get_phi_inv(const float p) noexcept -> float {
     return std::sqrt(2.0f) * get_erf_inv(2.0f * p - 1.0f);
 }
 
-[[nodiscard]] constexpr auto get_diff(const float p) noexcept -> float {
+[[nodiscard]] auto get_diff(const float p) noexcept -> float {
     if (p >= 1.0f) {
         return std::numeric_limits<float>::infinity();
     } else if (p <= 0.0f) {
@@ -42,14 +42,14 @@ static constexpr auto pi = std::numbers::pi_v<float>;
 
 }  // namespace
 
-[[nodiscard]] constexpr auto los(const int w, const int l) noexcept -> float {
+[[nodiscard]] auto los(const int w, const int l) noexcept -> float {
     if (w + l == 0) {
         return std::numeric_limits<float>::quiet_NaN();
     }
     return 100.0f * (0.5f + 0.5f * std::erf((w - l) / std::sqrt(2.0f * (w + l))));
 }
 
-[[nodiscard]] constexpr auto get_elo(const int w, const int l, const int d) noexcept -> float {
+[[nodiscard]] auto get_elo(const int w, const int l, const int d) noexcept -> float {
     if (w + l + d == 0) {
         return std::numeric_limits<float>::quiet_NaN();
     }
@@ -59,7 +59,7 @@ static constexpr auto pi = std::numbers::pi_v<float>;
     return value == -0.0f ? 0.0f : value;
 }
 
-[[nodiscard]] constexpr auto get_err(const int w, const int l, const int d) noexcept -> float {
+[[nodiscard]] auto get_err(const int w, const int l, const int d) noexcept -> float {
     const auto total = w + l + d;
 
     if (total == 0) {

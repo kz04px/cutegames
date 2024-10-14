@@ -6,7 +6,7 @@
 
 namespace {
 
-[[nodiscard]] constexpr auto elo_to_probability(const float elo,
+[[nodiscard]] auto elo_to_probability(const float elo,
                                                 const float drawelo) -> std::tuple<float, float, float> {
     const auto pwin = 1.0f / (1.0f + std::pow(10.0f, (-elo + drawelo) / 400.0f));
     const auto ploss = 1.0f / (1.0f + std::pow(10.0f, (elo + drawelo) / 400.0f));
@@ -14,7 +14,7 @@ namespace {
     return {pwin, pdraw, ploss};
 }
 
-[[nodiscard]] constexpr auto probability_to_elo(const float pwin,
+[[nodiscard]] auto probability_to_elo(const float pwin,
                                                 const float,
                                                 const float ploss) -> std::pair<float, float> {
     const auto elo = 200.0f * std::log10(pwin / ploss * (1.0f - ploss) / (1.0f - pwin));
@@ -26,7 +26,7 @@ namespace {
 
 namespace sprt {
 
-[[nodiscard]] constexpr auto get_llr(int wins, int losses, int draws, const float elo0, const float elo1) -> float {
+[[nodiscard]] auto get_llr(int wins, int losses, int draws, const float elo0, const float elo1) -> float {
     wins = std::max(wins, 1);
     losses = std::max(losses, 1);
     draws = std::max(draws, 1);
@@ -45,15 +45,15 @@ namespace sprt {
     return wins_factor + losses_factor + draws_factor;
 }
 
-[[nodiscard]] constexpr auto get_lbound(const float alpha, const float beta) -> float {
+[[nodiscard]] auto get_lbound(const float alpha, const float beta) -> float {
     return std::log(beta / (1.0f - alpha));
 }
 
-[[nodiscard]] constexpr auto get_ubound(const float alpha, const float beta) -> float {
+[[nodiscard]] auto get_ubound(const float alpha, const float beta) -> float {
     return std::log((1.0f - beta) / alpha);
 }
 
-[[nodiscard]] constexpr auto should_stop(const int wins,
+[[nodiscard]] auto should_stop(const int wins,
                                          const int losses,
                                          const int draws,
                                          const float elo0,
