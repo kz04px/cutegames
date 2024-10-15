@@ -5,8 +5,8 @@
 #include <memory>
 #include "games/game.hpp"
 
-class AdjudicationSettings;
-class ProtocolSettings;
+struct AdjudicationSettings;
+struct ProtocolSettings;
 
 struct [[nodiscard]] GG {
     GameResult result;

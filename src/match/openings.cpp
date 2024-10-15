@@ -13,6 +13,9 @@
     auto openings = std::vector<std::string>();
     std::string line;
     while (std::getline(file, line)) {
+        if (line.ends_with('\r')) {
+            line.pop_back();
+        }
         if (line.empty() || line[0] == '#') {
             continue;
         }
