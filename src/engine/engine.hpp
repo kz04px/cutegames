@@ -67,7 +67,7 @@ struct [[nodiscard]] SearchSettings {
     int nodes = 0;
 };
 
-class Engine {
+class [[nodiscard]] Engine {
    public:
     using callback_type = std::function<void(const std::string_view)>;
     using id_type = std::size_t;
@@ -103,7 +103,7 @@ class Engine {
     virtual auto set_option(const std::string &, const std::string &) -> void = 0;
 
    protected:
-    [[nodiscard]] Engine() {
+    Engine() {
     }
 
     [[nodiscard]] explicit Engine(const id_type id) : m_id(id) {

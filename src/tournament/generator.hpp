@@ -15,7 +15,7 @@ struct [[nodiscard]] GameInfo {
     }
 };
 
-class TournamentGenerator {
+class [[nodiscard]] TournamentGenerator {
    public:
     virtual ~TournamentGenerator() = default;
 
