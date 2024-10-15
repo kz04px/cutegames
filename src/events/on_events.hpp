@@ -16,11 +16,13 @@ auto on_game_finished(const std::shared_ptr<libevents::Event> &,
 
 auto on_game_started(const std::shared_ptr<libevents::Event> &, const MatchSettings &) noexcept -> void;
 
-auto on_engine_loaded(const std::shared_ptr<libevents::Event> &, const MatchSettings &, MatchStatistics &) noexcept
-    -> void;
+auto on_engine_loaded(const std::shared_ptr<libevents::Event> &,
+                      const MatchSettings &,
+                      MatchStatistics &) noexcept -> void;
 
-auto on_engine_unloaded(const std::shared_ptr<libevents::Event> &, const MatchSettings &, MatchStatistics &) noexcept
-    -> void;
+auto on_engine_unloaded(const std::shared_ptr<libevents::Event> &,
+                        const MatchSettings &,
+                        MatchStatistics &) noexcept -> void;
 
 auto on_match_finished(const std::shared_ptr<libevents::Event> &, bool &) noexcept -> void;
 

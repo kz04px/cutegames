@@ -29,8 +29,9 @@
 #include "store.hpp"
 #include "tournament/types.hpp"
 
-[[nodiscard]] auto make_engine(const GameType game_type, const EngineSettings &settings, const bool debug = false)
-    -> std::shared_ptr<Engine> {
+[[nodiscard]] auto make_engine(const GameType game_type,
+                               const EngineSettings &settings,
+                               const bool debug = false) -> std::shared_ptr<Engine> {
     auto make_engine = [&game_type, &settings]() -> std::shared_ptr<Engine> {
         switch (game_type) {
             case GameType::Generic:
