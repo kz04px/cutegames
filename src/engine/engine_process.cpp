@@ -1,7 +1,6 @@
 #include "engine_process.hpp"
 #include <boost/process.hpp>
 #include <utility>
-#include <CLI/StringTools.hpp>
 #include "engine.hpp"
 
 [[nodiscard]] ProcessEngine::ProcessEngine(const id_type id, const std::string &path, const std::string &parameters)
