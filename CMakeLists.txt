@@ -48,6 +48,8 @@ FetchContent_MakeAvailable(json doctest cli11 termcolor libataxx libchess)
 
 find_package(Threads REQUIRED)
 
+add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
+
 # Flags
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wpedantic")
