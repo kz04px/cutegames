@@ -11,37 +11,37 @@ include(FetchContent)
 FetchContent_Declare(
     json
     GIT_REPOSITORY https://github.com/nlohmann/json
-    GIT_TAG bc889afb4c5bf1c0d8ee29ef35eaaf4c8bef8a5d
+    GIT_TAG 63258397761b3dd96dd171e5a5ad5aa915834c35
 )
 
 FetchContent_Declare(
     doctest
     GIT_REPOSITORY https://github.com/doctest/doctest
-    GIT_TAG 8fdfd113dcb4ad1a31705ff8ddb13a21a505bad8
+    GIT_TAG ae7a13539fb71f270b87eb2e874fbac80bc8dda2
 )
 
 FetchContent_Declare(
     cli11
     GIT_REPOSITORY https://github.com/CLIUtils/CLI11
-    GIT_TAG 291c58789c031208f08f4f261a858b5b7083e8e2
+    GIT_TAG e52bef1eb889aab0cdc7dc0d40d1e83ffbd06af6
 )
 
 FetchContent_Declare(
     termcolor
     GIT_REPOSITORY https://github.com/ikalnytskyi/termcolor
-    GIT_TAG b3cb0f365f8435588df7a6b12a82b2ac5fc1fe95
+    GIT_TAG 89f20096bef51de347ec6f99345f65147359bd7c
 )
 
 FetchContent_Declare(
     libataxx
     GIT_REPOSITORY https://github.com/kz04px/libataxx
-    GIT_TAG 8fa7dd3115552548aec6764e9cbe989f2430b239
+    GIT_TAG 4226c26dd11a1f74be708882ece6fd9dc96c767b
 )
 
 FetchContent_Declare(
     libchess
     GIT_REPOSITORY https://github.com/kz04px/libchess
-    GIT_TAG fda27a1f2c71b157561b6f45a42e085ce6ae620b
+    GIT_TAG 71c3543da7ad64387b618e889feef5406f1ee851
 )
 
 FetchContent_MakeAvailable(json doctest cli11 termcolor libataxx libchess)
