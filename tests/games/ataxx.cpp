@@ -8,7 +8,6 @@
 #include <stdexcept>
 #include <string>
 #include "games/game.hpp"
-#include "match/settings.hpp"
 
 class TestEngine final : public Engine {
    public:
