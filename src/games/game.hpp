@@ -73,8 +73,8 @@ class Game {
 
     [[nodiscard]] virtual auto is_gameover(std::shared_ptr<Engine>) const noexcept -> bool = 0;
 
-    [[nodiscard]] virtual auto is_legal_move(const std::string &movestr,
-                                             std::shared_ptr<Engine>) const noexcept -> bool = 0;
+    [[nodiscard]] virtual auto is_legal_move(const std::string &movestr, std::shared_ptr<Engine>) const noexcept
+        -> bool = 0;
 
     [[nodiscard]] virtual auto get_result(std::shared_ptr<Engine>) const noexcept -> std::string = 0;
 
