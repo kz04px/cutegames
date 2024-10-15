@@ -64,10 +64,13 @@ class [[nodiscard]] Dispatcher {
     }
 
     void send_all() {
+        std::unique_lock<std::mutex> lock(mutex);
         while (!event_queue.empty()) {
             const auto event = event_queue.front();
             event_queue.pop();
+            lock.unlock();
             send_event(event);
+            lock.lock();
         }
     }
 
@@ -76,8 +79,7 @@ class [[nodiscard]] Dispatcher {
             return;
         }
 
-        std::mutex asd;
-        std::unique_lock<std::mutex> lock(asd);
+        std::unique_lock<std::mutex> lock(mutex);
         cv_work.wait(lock, [&] {
             return !event_queue.empty();
         });
