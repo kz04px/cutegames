@@ -35,7 +35,9 @@ auto ProcessEngine::wait_for(const std::string &msg) -> void {
     std::string line;
     while (is_running()) {
         std::getline(m_out, line);
-        CLI::detail::trim(line);
+        if (line.ends_with('\r')) {
+            line.pop_back();
+        }
         m_recv(line);
         if (line == msg) {
             break;
@@ -48,7 +50,9 @@ auto ProcessEngine::wait_for(const std::function<bool(const std::string_view msg
     auto exit = false;
     while (is_running() && !exit) {
         std::getline(m_out, line);
-        CLI::detail::trim(line);
+        if (line.ends_with('\r')) {
+            line.pop_back();
+        }
         m_recv(line);
         exit = func(line);
     }
