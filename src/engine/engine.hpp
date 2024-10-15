@@ -106,7 +106,7 @@ class Engine {
     [[nodiscard]] Engine() {
     }
 
-    [[nodiscard]] Engine(const id_type id) : m_id(id) {
+    [[nodiscard]] explicit Engine(const id_type id) : m_id(id) {
     }
 
     [[nodiscard]] Engine(const id_type id, callback_type recv, callback_type send)
