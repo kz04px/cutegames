@@ -7,7 +7,6 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <array>
 #include "games/game.hpp"
 #include "match/settings.hpp"
 
@@ -191,7 +190,7 @@ class StrongTestEngine final : public Engine {
 }
 
 TEST_CASE("Ataxx - Play games") {
-    const std::array<std::string, 17> fens = {
+    const std::array fens = {
         "startpos",
         "x5o/7/7/7/7/7/o5x x 0 1",
         "x5o/7/7/7/7/7/o5x o 0 1",
@@ -278,7 +277,7 @@ TEST_CASE("Ataxx - Play games") {
 }
 
 TEST_CASE("Ataxx - Black wins") {
-    const std::array<std::string, 4> fens = {
+    const std::array fens = {
         "xxxxx1o/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx x 0 1",
         "xxxxx1o/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx o 0 1",
         "xxxxx1o/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx x 99 1",
@@ -326,7 +325,7 @@ TEST_CASE("Ataxx - Black wins") {
 }
 
 TEST_CASE("Ataxx - White wins") {
-    const std::array<std::string, 4> fens = {
+    const std::array fens = {
         "ooooo1x/ooooooo/ooooooo/ooooooo/ooooooo/ooooooo/ooooooo x 0 1",
         "ooooo1x/ooooooo/ooooooo/ooooooo/ooooooo/ooooooo/ooooooo o 0 1",
         "ooooo1x/ooooooo/ooooooo/ooooooo/ooooooo/ooooooo/ooooooo x 99 1",
@@ -374,7 +373,7 @@ TEST_CASE("Ataxx - White wins") {
 }
 
 TEST_CASE("Ataxx - Draw") {
-    const std::array<std::string, 16> fens = {
+    const std::array fens = {
         "o1-----/-------/-------/-------/-------/-------/x1----- x 0 1",
         "o1-----/-------/-------/-------/-------/-------/x1----- o 0 1",
         "x------/-------/-------/-------/-------/-------/o------ x 0 1",
@@ -425,7 +424,7 @@ TEST_CASE("Ataxx - Draw") {
 }
 
 TEST_CASE("Ataxx - Strong vs Weak") {
-    const std::array<std::string, 26> fens = {
+    const std::array fens = {
         // Tournament openings
         "startpos",
         "x5o/7/2-1-2/7/2-1-2/7/o5x x 0 1",

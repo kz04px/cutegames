@@ -7,7 +7,6 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <array>
 #include "games/game.hpp"
 
 class TestEngine final : public Engine {
@@ -98,7 +97,7 @@ class TestEngine final : public Engine {
 }
 
 TEST_CASE("Generic - Play games") {
-    const std::array<std::string, 17> fens = {
+    const std::array fens = {
         "startpos",
         "x5o/7/7/7/7/7/o5x x 0 1",
         "x5o/7/7/7/7/7/o5x o 0 1",
@@ -181,7 +180,7 @@ TEST_CASE("Generic - Play games") {
 }
 
 TEST_CASE("Generic - Player 1 wins") {
-    const std::array<std::string, 4> fens = {
+    const std::array fens = {
         "xxxxx1o/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx x 0 1",
         "xxxxx1o/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx o 0 1",
         "xxxxx1o/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx/xxxxxxx x 99 1",
@@ -225,7 +224,7 @@ TEST_CASE("Generic - Player 1 wins") {
 }
 
 TEST_CASE("Generic - Player 2 wins") {
-    const std::array<std::string, 4> fens = {
+    const std::array fens = {
         "ooooo1x/ooooooo/ooooooo/ooooooo/ooooooo/ooooooo/ooooooo x 0 1",
         "ooooo1x/ooooooo/ooooooo/ooooooo/ooooooo/ooooooo/ooooooo o 0 1",
         "ooooo1x/ooooooo/ooooooo/ooooooo/ooooooo/ooooooo/ooooooo x 99 1",
@@ -269,7 +268,7 @@ TEST_CASE("Generic - Player 2 wins") {
 }
 
 TEST_CASE("Generic - Draw") {
-    const std::array<std::string, 16> fens = {
+    const std::array fens = {
         "o1-----/-------/-------/-------/-------/-------/x1----- x 0 1",
         "o1-----/-------/-------/-------/-------/-------/x1----- o 0 1",
         "x------/-------/-------/-------/-------/-------/o------ x 0 1",

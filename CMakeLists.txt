@@ -34,8 +34,8 @@ FetchContent_Declare(
 
 FetchContent_Declare(
     libataxx
-    GIT_REPOSITORY https://github.com/mcthouacbb/libataxx
-    GIT_TAG 5d3fb506d481404193839fa63f8355a86ecf1ec3
+    GIT_REPOSITORY https://github.com/kz04px/libataxx
+    GIT_TAG 8fa7dd3115552548aec6764e9cbe989f2430b239
 )
 
 FetchContent_Declare(
@@ -50,9 +50,9 @@ find_package(Threads REQUIRED)
 
 # Flags
 set(CMAKE_CXX_STANDARD 20)
-#set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wpedantic")
-#set(CMAKE_CXX_FLAGS_DEBUG "-g -fsanitize=address")
-#set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -DNDEBUG")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wpedantic")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -fsanitize=address")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -DNDEBUG")
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 # Default build type
