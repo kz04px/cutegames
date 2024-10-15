@@ -6,17 +6,14 @@
 
 namespace {
 
-[[nodiscard]] auto elo_to_probability(const float elo,
-                                                const float drawelo) -> std::tuple<float, float, float> {
+[[nodiscard]] auto elo_to_probability(const float elo, const float drawelo) -> std::tuple<float, float, float> {
     const auto pwin = 1.0f / (1.0f + std::pow(10.0f, (-elo + drawelo) / 400.0f));
     const auto ploss = 1.0f / (1.0f + std::pow(10.0f, (elo + drawelo) / 400.0f));
     const auto pdraw = 1.0f - pwin - ploss;
     return {pwin, pdraw, ploss};
 }
 
-[[nodiscard]] auto probability_to_elo(const float pwin,
-                                                const float,
-                                                const float ploss) -> std::pair<float, float> {
+[[nodiscard]] auto probability_to_elo(const float pwin, const float, const float ploss) -> std::pair<float, float> {
     const auto elo = 200.0f * std::log10(pwin / ploss * (1.0f - ploss) / (1.0f - pwin));
     const auto draw_elo = 200.0f * std::log10((1.0f - ploss) / ploss * (1.0f - pwin) / pwin);
     return {elo, draw_elo};
@@ -54,12 +51,12 @@ namespace sprt {
 }
 
 [[nodiscard]] auto should_stop(const int wins,
-                                         const int losses,
-                                         const int draws,
-                                         const float elo0,
-                                         const float elo1,
-                                         const float alpha,
-                                         const float beta) -> bool {
+                               const int losses,
+                               const int draws,
+                               const float elo0,
+                               const float elo1,
+                               const float alpha,
+                               const float beta) -> bool {
     const auto llr = get_llr(wins, losses, draws, elo0, elo1);
     const auto lbound = get_lbound(alpha, beta);
     const auto ubound = get_ubound(alpha, beta);
