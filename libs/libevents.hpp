@@ -39,17 +39,17 @@ class [[nodiscard]] Dispatcher {
         return event_queue.size();
     }
 
-    void register_event_listener(const Event::EventIDType id, listener_type func) {
+    void register_event_listener(const Event::EventIDType id, const listener_type &func) {
         event_listeners[id].emplace_back(func);
     }
 
-    void post_event(std::shared_ptr<Event> event) {
+    void post_event(const std::shared_ptr<Event> &event) {
         std::unique_lock<std::mutex> lock(mutex);
         event_queue.push(event);
         cv_work.notify_one();
     }
 
-    void send_event(std::shared_ptr<Event> event) {
+    void send_event(const std::shared_ptr<Event> &event) {
         const auto iter = event_listeners.find(event->id());
 
         // No event listeners

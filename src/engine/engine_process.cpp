@@ -44,7 +44,7 @@ auto ProcessEngine::wait_for(const std::string &msg) -> void {
     }
 }
 
-auto ProcessEngine::wait_for(const std::function<bool(const std::string_view msg)> func) -> void {
+auto ProcessEngine::wait_for(const std::function<bool(const std::string_view msg)> &func) -> void {
     std::string line;
     auto exit = false;
     while (is_running() && !exit) {

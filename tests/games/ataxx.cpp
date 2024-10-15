@@ -173,7 +173,7 @@ class StrongTestEngine final : public Engine {
     libataxx::Position m_pos;
 };
 
-[[nodiscard]] static auto get_final(const std::shared_ptr<Game> game) -> libataxx::Position {
+[[nodiscard]] static auto get_final(const std::shared_ptr<Game> &game) -> libataxx::Position {
     auto pos = libataxx::Position(game->start_fen());
     for (const auto &movestr : game->move_history()) {
         const auto move = libataxx::Move::from_uai(movestr);
