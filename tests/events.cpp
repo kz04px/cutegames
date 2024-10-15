@@ -1,13 +1,13 @@
 #include <doctest/doctest.h>
 #include <libevents.hpp>
 
-struct [[nodiscard]] TestEvent : public libevents::Event {
+struct [[nodiscard]] TestEvent final : public libevents::Event {
     [[nodiscard]] virtual auto id() const noexcept -> libevents::Event::EventIDType override {
         return 0;
     }
 };
 
-struct [[nodiscard]] TestEvent2 : public libevents::Event {
+struct [[nodiscard]] TestEvent2 final : public libevents::Event {
     [[nodiscard]] virtual auto id() const noexcept -> libevents::Event::EventIDType override {
         return 1;
     }
