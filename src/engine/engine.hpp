@@ -103,8 +103,7 @@ class [[nodiscard]] Engine {
     virtual auto set_option(const std::string &, const std::string &) -> void = 0;
 
    protected:
-    Engine() {
-    }
+    Engine() = default;
 
     [[nodiscard]] explicit Engine(const id_type id) : m_id(id) {
     }

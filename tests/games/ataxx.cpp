@@ -12,8 +12,7 @@
 
 class TestEngine final : public Engine {
    public:
-    virtual ~TestEngine() {
-    }
+    virtual ~TestEngine() = default;
 
     [[nodiscard]] virtual auto is_running() -> bool override {
         return true;
@@ -85,8 +84,7 @@ class TestEngine final : public Engine {
 
 class StrongTestEngine final : public Engine {
    public:
-    virtual ~StrongTestEngine() {
-    }
+    virtual ~StrongTestEngine() = default;
 
     [[nodiscard]] virtual auto is_running() -> bool override {
         return true;
